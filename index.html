@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stall Watch Concept</title>
+<meta name="description" content="Stall Watch: an independent concept for Vetcove Home Delivery. Clinic-first alerts for stalled home-delivery orders. Synthetic data. Not an official Vetcove product.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M16 7v10M16 22v2' stroke='white' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f1f3f6; --border:#e3e6eb; --border-strong:#cfd4dc;
+  --text:#14181f; --text-2:#4a5260; --text-3:#6b7382;
+  --brand:#0f766e; --brand-ink:#ffffff; --brand-soft:#e6f4f2;
+  --crit:#b42318; --crit-soft:#fdecea; --warn:#a15c07; --warn-soft:#fdf3e2;
+  --ok:#1b7f3b; --ok-soft:#e8f5ec; --info:#2457c5; --info-soft:#e9effc; --muted-soft:#eef0f3;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  --shadow-lg:0 12px 32px rgba(16,24,40,.18);
+  --radius:10px; --radius-sm:6px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1217; --surface:#171b22; --surface-2:#1e232c; --border:#2a303b; --border-strong:#3a414e;
+    --text:#e8ebf0; --text-2:#b3bac6; --text-3:#8a93a2;
+    --brand:#2bb5a6; --brand-ink:#04211e; --brand-soft:#123430;
+    --crit:#ff7a6b; --crit-soft:#3a1714; --warn:#f0b35a; --warn-soft:#352610;
+    --ok:#5fd08a; --ok-soft:#12301d; --info:#8fb0ff; --info-soft:#18233d; --muted-soft:#232831;
+    --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-lg:0 12px 32px rgba(0,0,0,.55);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1217; --surface:#171b22; --surface-2:#1e232c; --border:#2a303b; --border-strong:#3a414e;
+  --text:#e8ebf0; --text-2:#b3bac6; --text-3:#8a93a2;
+  --brand:#2bb5a6; --brand-ink:#04211e; --brand-soft:#123430;
+  --crit:#ff7a6b; --crit-soft:#3a1714; --warn:#f0b35a; --warn-soft:#352610;
+  --ok:#5fd08a; --ok-soft:#12301d; --info:#8fb0ff; --info-soft:#18233d; --muted-soft:#232831;
+  --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-lg:0 12px 32px rgba(0,0,0,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.45 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* disclaimer + top bar */
+.disclaimer{background:var(--surface-2);border-bottom:1px solid var(--border);color:var(--text-2);font-size:12px;padding:6px 16px;text-align:center}
+.topbar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;flex:none}
+.brand-name{font-weight:650;white-space:nowrap}
+.brand-sub{color:var(--text-3);font-size:12px;white-space:nowrap}
+.brand-tag{font-weight:500;color:var(--text-3);font-size:12.5px}
+.logo{font-size:12px;letter-spacing:.02em}
+.spacer{flex:1}
+.clock{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:4px 4px 4px 12px}
+.clock-label{font-size:12px;color:var(--text-3)}
+.clock-date{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.btn{border:1px solid var(--border-strong);background:var(--surface);border-radius:var(--radius-sm);padding:6px 12px;font-weight:550;line-height:1.2}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.pill{border-radius:999px}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.icon-btn{border:1px solid var(--border);background:var(--surface);border-radius:999px;width:34px;height:34px;display:grid;place-items:center}
+.icon-btn:hover{background:var(--surface-2)}
+
+/* layout */
+.shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 90px)}
+.nav{border-right:1px solid var(--border);background:var(--surface);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--text-2);text-decoration:none;font-weight:550}
+.nav a:hover{background:var(--surface-2);color:var(--text)}
+.nav a[aria-current="page"]{background:var(--brand-soft);color:var(--brand)}
+.nav .count{background:var(--crit);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;font-weight:700}
+.nav-foot{margin-top:auto;padding:10px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border)}
+main{padding:20px 24px 80px;min-width:0}
+h1{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:16px;margin:24px 0 8px}
+h3{font-size:14px;margin:16px 0 6px}
+.lede{color:var(--text-2);margin:0 0 16px;max-width:760px}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 16px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow)}
+.tile .k{color:var(--text-3);font-size:12px;font-weight:550}
+.tile .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile.crit .v{color:var(--crit)}
+
+/* toolbar */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 12px;font-weight:550;color:var(--text-2)}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
+.seg button+button{border-left:1px solid var(--border-strong)}
+.toolbar .hint{color:var(--text-3);font-size:12px}
+
+/* queue */
+.queue{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:44px minmax(0,2.1fr) minmax(0,1.7fr) minmax(0,1.1fr) minmax(0,1fr);gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);text-align:left;width:100%;transition:border-color .15s, transform .15s}
+.row:hover{border-color:var(--border-strong)}
+.row.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--warn)}100%{box-shadow:var(--shadow)}}
+.rank{font-weight:700;font-variant-numeric:tabular-nums;font-size:16px;color:var(--text-3);text-align:center}
+.rank.top{color:var(--crit)}
+.pet{font-weight:650;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.sub{color:var(--text-3);font-size:12px}
+.drug{font-weight:550}
+.cell-label{display:none;color:var(--text-3);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.supply{font-weight:650;font-variant-numeric:tabular-nums}
+.supply.crit{color:var(--crit)} .supply.warn{color:var(--warn)} .supply.unknown{color:var(--text-3);font-weight:550}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:650;white-space:nowrap;border:1px solid transparent}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.maint{background:var(--muted-soft);color:var(--text-2)}
+.chip.rule{background:var(--info-soft);color:var(--info);white-space:normal;line-height:1.3;padding:2px 8px}
+.row > div{min-width:0}
+.chip.open{background:var(--warn-soft);color:var(--warn)}
+.chip.ack{background:var(--info-soft);color:var(--info)}
+.chip.res{background:var(--ok-soft);color:var(--ok)}
+.chip.new{background:var(--warn);color:#fff}
+.empty{background:var(--surface);border:1px dashed var(--border-strong);border-radius:var(--radius);padding:28px;text-align:center;color:var(--text-2)}
+
+/* table */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:12px;color:var(--text-3);font-weight:600;background:var(--surface-2);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td select{border:1px solid var(--border-strong);background:var(--surface);border-radius:6px;padding:4px 6px}
+tr.clickable{cursor:pointer} tr.clickable:hover td{background:var(--surface-2)}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,14,20,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(560px,100%);background:var(--surface);z-index:50;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.drawer-body{padding:4px 18px 28px;overflow:auto;flex:1}
+.callout{border-radius:var(--radius);padding:10px 12px;margin:12px 0;border:1px solid var(--border)}
+.callout.why{background:var(--warn-soft);border-color:transparent}
+.callout.rank-why{background:var(--surface-2)}
+.callout b{font-weight:650}
+.math{font-variant-numeric:tabular-nums;background:var(--surface-2);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px}
+.math .eq{font-weight:650}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{display:grid;grid-template-columns:18px 1fr auto;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);align-items:start}
+.timeline li:last-child{border-bottom:0}
+.dot{width:12px;height:12px;border-radius:50%;margin-top:4px;border:2px solid var(--border-strong);background:var(--surface)}
+.dot.done{background:var(--ok);border-color:var(--ok)}
+.dot.miss{background:var(--crit);border-color:var(--crit)}
+.dot.pend{border-style:dashed}
+.dot.event{background:var(--info);border-color:var(--info)}
+.tl-when{font-size:12px;color:var(--text-3);white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-2);font-weight:550}
+label.f select,label.f textarea{border:1px solid var(--border-strong);background:var(--surface);border-radius:6px;padding:7px 8px;font-size:14px;color:var(--text)}
+label.f textarea{min-height:64px;resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.req-note{font-size:12px;color:var(--text-3)}
+.audit{list-style:none;padding:0;margin:0;font-size:13px}
+.audit li{padding:6px 0;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;gap:10px}
+.audit li:last-child{border-bottom:0}
+.audit .who{color:var(--text-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.step .n{width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:13px;margin-bottom:8px}
+.step h3{margin:0 0 4px}
+.step p{margin:0;color:var(--text-2);font-size:13px}
+.prose{max-width:760px;color:var(--text-2)}
+.prose b{color:var(--text)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin:12px 0}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compare .card h3{margin-top:0}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 14px;border-radius:8px;font-weight:550;opacity:0;transition:all .2s;z-index:60;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.mobile-nav{display:none}
+
+@media (max-width: 900px){
+  .shell{grid-template-columns:1fr}
+  .nav{display:none}
+  main{padding:16px 16px 96px}
+  .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:30;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .mobile-nav a{flex:1;text-align:center;padding:6px 2px;color:var(--text-3);text-decoration:none;font-size:11.5px;font-weight:600;border-radius:8px;position:relative}
+  .mobile-nav a[aria-current="page"]{color:var(--brand);background:var(--brand-soft)}
+  .mobile-nav .count{position:absolute;top:0;right:12%;background:var(--crit);color:#fff;border-radius:999px;font-size:10px;padding:0 5px}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .row{grid-template-columns:34px minmax(0,1fr);row-gap:6px}
+  .row > .c-drug,.row > .c-supply,.row > .c-state{grid-column:2}
+  .cell-label{display:inline;margin-right:4px}
+  .row > .c-supply,.row > .c-state{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .row > .c-supply > div,.row > .c-state > div{margin-top:0 !important}
+  .steps{grid-template-columns:1fr 1fr}
+  .compare{grid-template-columns:1fr}
+  .brand-sub{display:none}
+  .brand-tag{display:block;font-size:11.5px;white-space:normal;line-height:1.25}
+  .topbar{gap:8px;flex-wrap:wrap}
+  .brand{flex:1 1 0;min-width:0}
+  .brand-name{overflow:hidden;text-overflow:ellipsis}
+  .spacer{display:none}
+  .clock{order:3;width:100%;justify-content:space-between}
+  .toolbar .seg{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .toolbar .seg button{padding:6px 10px;white-space:nowrap;flex:none}
+  .toolbar .hint{width:100%}
+}
+@media (max-width: 480px){
+  .steps{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .clock-label{display:none}
+}
+</style>
+</head>
+<body>
+<div class="disclaimer">Independent case study by Anvitha Abbagani, not an official Vetcove product. Fictional clinic, synthetic data, simulated clock.</div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">SW</div>
+    <div style="min-width:0">
+      <div class="brand-name">Stall Watch <span class="brand-tag">concept for Vetcove Home Delivery</span></div>
+      <div class="brand-sub">Clinic view · Maple Street Animal Hospital (fictional)</div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="clock" aria-live="polite">
+    <span class="clock-label">Simulated today</span>
+    <span class="clock-date" id="clockDate"></span>
+    <button class="btn pill primary" id="advanceBtn" title="Move the simulated clock forward one business day and re-check every order">Advance 1 business day</button>
+  </div>
+  <button class="btn" id="resetBtn" title="Restore the original demo data">Reset</button>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle light/dark"></button>
+</header>
+
+<div class="shell">
+  <nav class="nav" aria-label="Sections">
+    <a href="#/exceptions" data-view="exceptions">Stalled orders <span class="count" id="navCount"></span></a>
+    <a href="#/orders" data-view="orders">All orders</a>
+    <a href="#/rules" data-view="rules">Rules &amp; tiers</a>
+    <a href="#/how" data-view="how">How it works</a>
+    <div class="nav-foot">Signed in as <b>Dana R.</b><br>Practice Manager</div>
+  </nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+
+<nav class="mobile-nav" aria-label="Sections">
+  <a href="#/exceptions" data-view="exceptions">Stalled <span class="count" id="navCountM"></span></a>
+  <a href="#/orders" data-view="orders">Orders</a>
+  <a href="#/rules" data-view="rules">Rules</a>
+  <a href="#/how" data-view="how">How it works</a>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"></aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- dates (UTC, day granularity) ---------- */
+const MS = 86400000;
+const D = s => Date.UTC(+s.slice(0,4), +s.slice(5,7)-1, +s.slice(8,10));
+const iso = t => new Date(t).toISOString().slice(0,10);
+const addDays = (s,n) => iso(D(s) + n*MS);
+const diff = (a,b) => Math.round((D(a)-D(b))/MS); // a - b in days
+const dow = s => new Date(D(s)).getUTCDay();
+const isBiz = s => { const w = dow(s); return w !== 0 && w !== 6; };
+function addBiz(s,n){ let d = s; while(n>0){ d = addDays(d,1); if(isBiz(d)) n--; } return d; }
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const fmt = s => `${MON[+s.slice(5,7)-1]} ${+s.slice(8,10)}`;
+const fmtLong = s => `${WD[dow(s)]}, ${fmt(s)}, ${s.slice(0,4)}`;
+const plural = (n,w) => `${n} ${w}${n===1?'':'s'}`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- configuration: fulfillment paths and rules ---------- */
+const PATHS = {
+  standard:   { label:'Standard Rx',   ackDays:1, shipDays:2, scanGap:3 },
+  compounded: { label:'Compounded Rx', ackDays:1, shipDays:5, scanGap:3 },
+  autoship:   { label:'Autoship cycle', ackDays:null, shipDays:1, scanGap:3 }
+};
+const RULES = {
+  R1:{ name:'No vendor acknowledgment', plain:'The fulfilling vendor has not acknowledged the order within its window.' },
+  R2:{ name:'Not shipped by ship-by date', plain:'The order was acknowledged but has no ship scan by its ship-by date.' },
+  R3:{ name:'Stuck in transit', plain:'The package has had no carrier scan for more than 3 days.' },
+  R4:{ name:'Vendor backorder / cancel', plain:'The vendor reported a backorder or cancelled the line.' },
+  R5:{ name:'Autoship cycle missed', plain:'A scheduled autoship shipment passed its date without shipping.' }
+};
+const START = '2026-10-06';
+const MAX_ADVANCE = 8; // business days the demo clock can move forward
+const OWNERS = ['Dana R. · Practice Manager','Dr. A. Patel · DVM','Sam K. · Front desk','Jordan L. · Pharmacy tech'];
+const ME = 'Dana R.';
+const RESOLUTIONS = [
+  'Switched to in-clinic pickup',
+  'Vendor confirmed new ship date',
+  'Re-placed order with vendor',
+  'Client contacted, waiting is OK',
+  'Cancelled with client',
+  'Shipped / now moving',
+  'Arrived on time (false alarm)'
+];
+
+/* ---------- synthetic seed data ----------
+   Every name, drug quantity and event below is invented for the demo.
+   events: approved, ack, shipped, scan, delivered, backorder, client_contact
+   dose: per-day consumption in the same unit as qty; null = sig not structured. */
+const DRUGS = {
+  insulin:  { name:'Porcine insulin zinc suspension 40 U/mL, 10 mL', cls:'Insulin', tier:'critical' },
+  toceranib:{ name:'Toceranib 50 mg tablets', cls:'Chemotherapy', tier:'critical' },
+  trilostane:{ name:'Trilostane 30 mg capsules (compounded)', cls:'Endocrine (Cushing’s)', tier:'maintenance' },
+  pimo:     { name:'Pimobendan 5 mg chewable tablets', cls:'Cardiac', tier:'critical' },
+  flural:   { name:'Fluralaner topical, 1 pipette (12-week)', cls:'Parasite preventive', tier:'maintenance' },
+  renal:    { name:'Renal support diet, dry, 8 lb bag', cls:'Therapeutic diet', tier:'maintenance' },
+  levet:    { name:'Levetiracetam ER 500 mg tablets', cls:'Anticonvulsant', tier:'critical' },
+  pheno:    { name:'Phenobarbital 16.2 mg tablets', cls:'Anticonvulsant', tier:'critical' },
+  carpro:   { name:'Carprofen 75 mg chewable tablets', cls:'NSAID', tier:'maintenance' },
+  gaba:     { name:'Gabapentin 100 mg capsules', cls:'Analgesic', tier:'maintenance' },
+  oclac:    { name:'Oclacitinib 16 mg tablets', cls:'Dermatology', tier:'maintenance' },
+  hwprev:   { name:'Ivermectin/pyrantel chewable, 6-pack', cls:'Parasite preventive', tier:'maintenance' },
+  methi:    { name:'Methimazole 5 mg tablets', cls:'Endocrine (thyroid)', tier:'maintenance' },
+  pred:     { name:'Prednisolone 5 mg tablets', cls:'Corticosteroid', tier:'maintenance' },
+  enal:     { name:'Enalapril 10 mg tablets', cls:'Cardiac', tier:'critical' },
+  maro:     { name:'Maropitant 16 mg tablets', cls:'Antiemetic', tier:'maintenance' }
+};
+const SEED = [
+  { id:'HD-24117', pet:'Maple', species:'Dog', client:'R. Okafor', drug:'insulin', path:'standard',
+    qty:400, unit:'U', dose:20, sig:'10 U twice daily', lastFill:'2026-09-17',
+    events:[['approved','2026-10-01'],['ack','2026-10-02']] },
+  { id:'HD-24109', pet:'Juniper', species:'Dog', client:'M. Alvarez', drug:'toceranib', path:'standard',
+    qty:12, unit:'tab', dose:3/7, sig:'1 tablet Mon/Wed/Fri', lastFill:'2026-09-12',
+    events:[['approved','2026-10-02'],['ack','2026-10-02'],['backorder','2026-10-05','Vendor: backordered, no ETA given']] },
+  { id:'HD-24112', pet:'Pepper', species:'Dog', client:'L. Chen', drug:'trilostane', path:'compounded',
+    qty:30, unit:'cap', dose:1, sig:'1 capsule once daily', lastFill:'2026-09-10',
+    events:[['approved','2026-10-02']] },
+  { id:'HD-24088', pet:'Otis', species:'Dog', client:'T. Brennan', drug:'pimo', path:'standard',
+    qty:60, unit:'tab', dose:2, sig:'1 tablet twice daily', lastFill:'2026-09-08',
+    events:[['approved','2026-09-25'],['ack','2026-09-25'],['shipped','2026-09-29'],['scan','2026-10-01','Departed carrier facility'],['client_contact','2026-10-05','Client texted: “Tracking hasn’t moved since Thursday?”'],['delivered','2026-10-08']] },
+  { id:'HD-24071', pet:'Clementine', species:'Cat', client:'J. Novak', drug:'flural', path:'standard',
+    qty:1, unit:'pipette', dose:1/84, sig:'Apply 1 pipette every 12 weeks', lastFill:'2026-08-30',
+    events:[['approved','2026-09-28'],['ack','2026-09-29']] },
+  { id:'HD-24095', pet:'Waffles', species:'Dog', client:'P. Ibarra', drug:'renal', path:'autoship',
+    qty:8, unit:'lb', dose:0.5, sig:'1 cup twice daily (~0.5 lb/day)', lastFill:'2026-09-23',
+    events:[['approved','2026-10-01','Autoship cycle scheduled']] },
+  { id:'HD-24121', pet:'Rosie', species:'Dog', client:'K. Mensah', drug:'levet', path:'standard',
+    qty:60, unit:'tab', dose:2, sig:'1 tablet twice daily', lastFill:'2026-09-08',
+    events:[['approved','2026-10-02'],['ack','2026-10-05'],['shipped','2026-10-08'],['scan','2026-10-09','Out for delivery'],['delivered','2026-10-09']] },
+  { id:'HD-24099', pet:'Mochi', species:'Cat', client:'S. Whitfield', drug:'pheno', path:'standard',
+    qty:60, unit:'tab', dose:null, sig:'Give as directed', lastFill:'2026-09-14',
+    events:[['approved','2026-09-29'],['ack','2026-09-30']] },
+  { id:'HD-24080', pet:'Bear', species:'Dog', client:'D. Fischer', drug:'carpro', path:'standard',
+    qty:30, unit:'tab', dose:1, sig:'1 tablet once daily', lastFill:'2026-09-28',
+    events:[['approved','2026-09-24'],['ack','2026-09-24'],['shipped','2026-09-28'],['scan','2026-09-30'],['delivered','2026-10-01']] },
+  { id:'HD-24118', pet:'Luna', species:'Cat', client:'A. Reyes', drug:'gaba', path:'standard',
+    qty:60, unit:'cap', dose:2, sig:'1 capsule twice daily', lastFill:'2026-09-20',
+    events:[['approved','2026-10-01'],['ack','2026-10-02'],['shipped','2026-10-05'],['scan','2026-10-06','In transit'],['delivered','2026-10-07']] },
+  { id:'HD-24124', pet:'Scout', species:'Dog', client:'H. Lindqvist', drug:'oclac', path:'standard',
+    qty:30, unit:'tab', dose:1, sig:'1 tablet once daily', lastFill:'2026-09-15',
+    events:[['approved','2026-10-05'],['ack','2026-10-05'],['shipped','2026-10-09'],['scan','2026-10-12'],['delivered','2026-10-13']] },
+  { id:'HD-24066', pet:'Hazel', species:'Dog', client:'G. Park', drug:'hwprev', path:'standard',
+    qty:6, unit:'chew', dose:1/30, sig:'1 chew monthly', lastFill:'2026-09-01',
+    events:[['approved','2026-09-22'],['ack','2026-09-22'],['shipped','2026-09-24'],['scan','2026-09-26'],['delivered','2026-09-29']] },
+  { id:'HD-24110', pet:'Ziggy', species:'Cat', client:'E. Duarte', drug:'methi', path:'standard',
+    qty:60, unit:'tab', dose:2, sig:'1 tablet twice daily', lastFill:'2026-09-10',
+    events:[['approved','2026-09-30'],['ack','2026-10-01'],['shipped','2026-10-02'],['scan','2026-10-05','Arrived at regional hub']] },
+  { id:'HD-24126', pet:'Daisy', species:'Dog', client:'C. Abara', drug:'pred', path:'standard',
+    qty:20, unit:'tab', dose:1, sig:'1 tablet once daily, then taper', lastFill:'2026-09-29',
+    events:[['approved','2026-10-06'],['ack','2026-10-07'],['shipped','2026-10-08'],['scan','2026-10-09'],['delivered','2026-10-10']] },
+  { id:'HD-24090', pet:'Tank', species:'Dog', client:'W. Sato', drug:'enal', path:'standard',
+    qty:60, unit:'tab', dose:2, sig:'1 tablet twice daily', lastFill:'2026-09-05',
+    events:[['approved','2026-09-28'],['ack','2026-09-28'],['shipped','2026-09-30'],['scan','2026-10-02'],['delivered','2026-10-05']] },
+  { id:'HD-24102', pet:'Nala', species:'Cat', client:'F. Haddad', drug:'maro', path:'standard',
+    qty:4, unit:'tab', dose:1, sig:'1 tablet daily as needed', lastFill:'2026-09-20',
+    events:[['approved','2026-09-30'],['ack','2026-09-30'],['shipped','2026-10-01'],['scan','2026-10-02'],['delivered','2026-10-03']] }
+];
+
+/* ---------- state ---------- */
+let S;
+function freshState(){
+  return {
+    now: START,
+    tiers: Object.fromEntries(Object.entries(DRUGS).map(([k,v]) => [k, v.tier])),
+    exceptions: {},          // orderId -> exception
+    sort: 'urgency',
+    filter: 'active',
+    seq: 0,
+    advances: 0,
+    newIds: [],   // raised by the most recent clock advance (keeps the New chip)
+    flash: []     // animate once
+  };
+}
+
+/* ---------- rule engine ---------- */
+function evalOrder(o, now){
+  const ev = o.events.filter(e => e[1] <= now);
+  const last = t => { const m = ev.filter(e => e[0]===t); return m.length ? m[m.length-1] : null; };
+  const p = PATHS[o.path];
+  const approved = last('approved')[1];
+  const ack = last('ack'), shipped = last('shipped'), delivered = last('delivered');
+  const bo = last('backorder');
+  const scans = ev.filter(e => e[0]==='scan' || e[0]==='shipped');
+  const lastMove = scans.length ? scans[scans.length-1][1] : null;
+  const ackBy = p.ackDays ? addBiz(approved, p.ackDays) : null;
+  const shipBy = addBiz(approved, p.shipDays);
+  const out = { approved, ackBy, shipBy, ack: ack&&ack[1], shipped: shipped&&shipped[1], delivered: delivered&&delivered[1], lastMove, rule:null, deadline:null, late:0 };
+
+  if (delivered){ out.status = 'Delivered'; return out; }
+  if (bo){ out.rule='R4'; out.deadline=bo[1]; out.late=diff(now,bo[1]); out.detail=bo[2]||'Vendor reported a backorder'; out.status='Backordered'; return out; }
+  if (o.path==='autoship'){
+    if (!shipped){
+      if (now > shipBy){ out.rule='R5'; out.deadline=shipBy; out.late=diff(now,shipBy); out.status='Autoship missed'; }
+      else out.status='Scheduled';
+      return out;
+    }
+  } else {
+    if (!ack){
+      if (now > ackBy){ out.rule='R1'; out.deadline=ackBy; out.late=diff(now,ackBy); out.status='Awaiting vendor'; }
+      else out.status='Awaiting vendor';
+      return out;
+    }
+    if (!shipped){
+      if (now > shipBy){ out.rule='R2'; out.deadline=shipBy; out.late=diff(now,shipBy); out.status='Not shipped'; }
+      else out.status='Awaiting shipment';
+      return out;
+    }
+  }
+  const gapDeadline = addDays(lastMove, p.scanGap);
+  if (now > gapDeadline){ out.rule='R3'; out.deadline=gapDeadline; out.late=diff(now,gapDeadline); out.status='Stuck in transit'; }
+  else out.status='In transit';
+  return out;
+}
+
+function supplyOf(o, now){
+  if (o.dose == null) return { known:false };
+  const days = Math.floor(o.qty / o.dose);
+  const runOut = addDays(o.lastFill, days);
+  return { known:true, days, runOut, left: diff(runOut, now) };
+}
+
+function audit(x, text, actor){
+  x.audit.push({ date:S.now, time:new Date().toTimeString().slice(0,5), text, actor: actor||ME });
+}
+
+function runRules(){
+  const created = [];
+  for (const o of SEED){
+    const r = evalOrder(o, S.now);
+    let x = S.exceptions[o.id];
+    if (r.rule && !x){
+      x = S.exceptions[o.id] = { id:'EX-' + String(++S.seq).padStart(3,'0'), orderId:o.id, rule:r.rule, raised:S.now, firstBreach:addDays(r.deadline, r.rule==='R4'?0:1), state:'open', owner:'', resolution:'', note:'', audit:[] };
+      audit(x, `Raised by rule ${r.rule} · ${RULES[r.rule].name}`, 'Stall Watch (system)');
+      created.push(o.id);
+    }
+    if (x && x.state !== 'resolved' && r.delivered){
+      x.state = 'resolved';
+      x.resolution = 'Delivered (auto-closed)';
+      x.note = `Carrier confirmed delivery on ${fmt(r.delivered)}.`;
+      audit(x, `Auto-resolved: order delivered ${fmt(r.delivered)}`, 'Stall Watch (system)');
+    }
+  }
+  return created;
+}
+
+/* ---------- ranking (D1) ---------- */
+function enrich(x){
+  const o = SEED.find(s => s.id===x.orderId);
+  const r = evalOrder(o, S.now);
+  const sup = supplyOf(o, S.now);
+  const tier = S.tiers[o.drug];
+  const lateNow = r.rule ? r.late : 0;
+  let group;
+  if (tier==='critical' && sup.known && sup.left <= 7) group = 0;
+  else if (!sup.known) group = 1;
+  else group = 2;
+  return { x, o, r, sup, tier, lateNow, group };
+}
+function ranked(list, mode){
+  const a = list.slice();
+  if (mode==='late'){
+    a.sort((p,q) => (q.lateNow - p.lateNow) || supKey(p) - supKey(q) || p.o.id.localeCompare(q.o.id));
+  } else {
+    a.sort((p,q) => (p.group - q.group)
+      || (p.group===1 ? (q.lateNow - p.lateNow) : (supKey(p) - supKey(q)) || (q.lateNow - p.lateNow))
+      || p.o.id.localeCompare(q.o.id));
+  }
+  return a;
+}
+const supKey = e => e.sup.known ? e.sup.left : 9999;
+
+function rankWhy(e, mode){
+  if (mode==='late') return `Sorted by <b>days late</b> only. Switch to <b>Urgency</b> to rank by when the pet runs out.`;
+  if (e.group===0) return `<b>Critical-tier drug with ${supplyText(e.sup)}.</b> Critical drugs with ≤ 7 days of supply rank first, soonest run-out first.`;
+  if (e.group===1) return `<b>Supply unknown</b>, because the directions (“${esc(e.o.sig)}”) can’t be turned into a daily dose. Ranked by days late, right after the critical items. Stall Watch never guesses a run-out date.`;
+  return `<b>${e.tier==='critical' ? 'Critical tier, but more than 7 days of supply' : 'Maintenance tier'}.</b> Ranked by soonest run-out after the critical and supply-unknown items.`;
+}
+function supplyText(sup){
+  if (!sup.known) return 'supply unknown';
+  if (sup.left < 0) return `out of supply ${plural(-sup.left,'day')} ago`;
+  if (sup.left === 0) return 'runs out today';
+  return `${plural(sup.left,'day')} of supply`;
+}
+function supplyClass(e){
+  if (!e.sup.known) return 'unknown';
+  if (e.sup.left <= 3) return 'crit';
+  if (e.sup.left <= 7) return 'warn';
+  return '';
+}
+function lateText(e){
+  const r = e.r;
+  if (!r.rule){
+    if (r.delivered) return `Delivered ${fmt(r.delivered)}`;
+    return r.status;
+  }
+  if (r.rule==='R4') return r.late===0 ? 'Reported today' : `Reported ${plural(r.late,'day')} ago`;
+  if (r.rule==='R3') return `${plural(r.late,'day')} past scan window`;
+  if (r.rule==='R1') return `${plural(r.late,'day')} past ack-by (${fmt(r.deadline)})`;
+  if (r.rule==='R5') return `${plural(r.late,'day')} past autoship date`;
+  return `${plural(r.late,'day')} past ship-by (${fmt(r.deadline)})`;
+}
+
+/* ---------- rendering ---------- */
+const $ = s => document.querySelector(s);
+const main = $('#main');
+let view = 'exceptions', openId = null;
+
+function counts(){
+  const xs = Object.values(S.exceptions);
+  const ens = xs.filter(x => x.state!=='resolved').map(enrich);
+  return {
+    open: xs.filter(x => x.state==='open').length,
+    ack: xs.filter(x => x.state==='ack').length,
+    res: xs.filter(x => x.state==='resolved').length,
+    crit: ens.filter(e => e.group===0).length
+  };
+}
+
+function render(){
+  $('#clockDate').textContent = fmtLong(S.now);
+  $('#advanceBtn').disabled = S.advances >= MAX_ADVANCE;
+  const c = counts();
+  const active = c.open + c.ack;
+  for (const id of ['#navCount','#navCountM']){ const el=$(id); el.textContent = active; el.style.display = active ? '' : 'none'; }
+  document.querySelectorAll('[data-view]').forEach(a => a.setAttribute('aria-current', a.dataset.view===view ? 'page' : 'false'));
+  if (view==='exceptions') renderQueue(c);
+  else if (view==='orders') renderOrders();
+  else if (view==='rules') renderRules();
+  else renderHow();
+  if (openId) renderDrawer();
+}
+
+function chipTier(t){ return `<span class="chip ${t==='critical'?'crit':'maint'}">${t==='critical'?'Critical':'Maintenance'}</span>`; }
+function chipState(x){
+  const m = { open:['open','Open'], ack:['ack','Acknowledged'], resolved:['res','Resolved'] }[x.state];
+  return `<span class="chip ${m[0]}">${m[1]}</span>`;
+}
+
+function renderQueue(c){
+  const all = Object.values(S.exceptions).map(enrich);
+  const f = S.filter;
+  const list = all.filter(e => f==='all' ? true : f==='active' ? e.x.state!=='resolved' : e.x.state===f);
+  const rows = ranked(list, S.sort);
+  main.innerHTML = `
+    <h1>Stalled orders</h1>
+    <p class="lede">Approved home-delivery orders that stopped moving, so the clinic finds out before the client does. Every row is raised by a plain rule against the order’s expected timeline, then ranked by how soon the pet runs out.</p>
+    <div class="tiles">
+      <div class="tile"><div class="k">Open</div><div class="v">${c.open}</div></div>
+      <div class="tile crit"><div class="k">Critical, ≤ 7 days supply</div><div class="v">${c.crit}</div></div>
+      <div class="tile"><div class="k">Acknowledged</div><div class="v">${c.ack}</div></div>
+      <div class="tile"><div class="k">Resolved</div><div class="v">${c.res}</div></div>
+    </div>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Sort">
+        <button data-sort="urgency" aria-pressed="${S.sort==='urgency'}">Urgency</button>
+        <button data-sort="late" aria-pressed="${S.sort==='late'}">Days late</button>
+      </div>
+      <div class="seg" role="group" aria-label="Filter">
+        ${[['active','Active'],['open','Open'],['ack','Acknowledged'],['resolved','Resolved'],['all','All']].map(([k,l]) => `<button data-filter="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}
+      </div>
+      <span class="hint">${S.sort==='urgency' ? 'Ranked by run-out date and drug tier' : 'Ranked by days late only'}</span>
+    </div>
+    <div class="queue" role="list">
+      ${rows.length ? rows.map((e,i) => rowHTML(e,i)).join('') : `<div class="empty">${f==='resolved' ? 'Nothing resolved yet.' : 'No stalled orders right now. Every approved order is inside its expected window.'}</div>`}
+    </div>`;
+  main.querySelectorAll('[data-sort]').forEach(b => b.onclick = () => { S.sort = b.dataset.sort; render(); });
+  main.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => { S.filter = b.dataset.filter; render(); });
+  main.querySelectorAll('.row').forEach(b => b.onclick = () => openDrawer(b.dataset.order));
+  S.flash = [];
+}
+
+function rowHTML(e,i){
+  const isNew = S.newIds.includes(e.o.id) && e.x.state==='open';
+  const doFlash = S.flash.includes(e.o.id);
+  const resolved = e.x.state==='resolved';
+  return `<button class="row${doFlash?' flash':''}" role="listitem" data-order="${e.o.id}" aria-label="${esc(e.o.pet)}, ${esc(DRUGS[e.o.drug].name)}, ${esc(RULES[e.x.rule].name)}">
+    <div class="rank${i===0 && !resolved && S.sort==='urgency' ? ' top':''}">${resolved ? '✓' : '#'+(i+1)}</div>
+    <div>
+      <div class="pet">${esc(e.o.pet)} <span class="sub">${esc(e.o.species)} · ${esc(e.o.client)}</span> ${isNew?'<span class="chip new">New</span>':''}</div>
+      <div class="drug">${esc(DRUGS[e.o.drug].name)}</div>
+      <div class="sub">${esc(e.o.id)} · ${PATHS[e.o.path].label}</div>
+    </div>
+    <div class="c-drug">
+      <div><span class="chip rule">${e.x.rule} · ${RULES[e.x.rule].name}</span></div>
+      <div class="sub" style="margin-top:3px">${resolved ? esc(e.x.resolution) : lateText(e)}</div>
+    </div>
+    <div class="c-supply">
+      <span class="cell-label">Supply</span><span class="supply ${supplyClass(e)}">${supplyText(e.sup)}</span>
+      <div style="margin-top:3px">${chipTier(e.tier)}</div>
+    </div>
+    <div class="c-state">
+      ${chipState(e.x)}
+      <div class="sub" style="margin-top:3px">${e.x.owner ? esc(e.x.owner.split(' · ')[0]) : 'Unassigned'}</div>
+    </div>
+  </button>`;
+}
+
+function renderOrders(){
+  const rows = SEED.map(o => ({ o, r:evalOrder(o,S.now), sup:supplyOf(o,S.now), x:S.exceptions[o.id] }))
+    .sort((a,b) => b.r.approved.localeCompare(a.r.approved));
+  main.innerHTML = `
+    <h1>All home-delivery orders</h1>
+    <p class="lede">Every approved order, checked against its expected timeline as of ${fmt(S.now)}. Most are fine, which is the point: Stall Watch only surfaces the ones that broke a rule.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Order</th><th>Patient</th><th>Item</th><th>Path</th><th>Approved</th><th>Status</th><th>Supply</th><th>Stall Watch</th></tr></thead>
+      <tbody>${rows.map(({o,r,sup,x}) => `
+        <tr class="${x?'clickable':''}" ${x?`data-order="${o.id}" tabindex="0"`:''}>
+          <td>${o.id}</td>
+          <td><b>${esc(o.pet)}</b><div class="sub">${esc(o.client)}</div></td>
+          <td>${esc(DRUGS[o.drug].name)}</td>
+          <td>${PATHS[o.path].label}</td>
+          <td>${fmt(r.approved)}</td>
+          <td>${r.delivered ? `Delivered ${fmt(r.delivered)}` : esc(r.status)}</td>
+          <td class="supply ${!sup.known?'unknown':''}">${supplyText(sup)}</td>
+          <td>${x ? `${chipState(x)} <span class="sub">${x.rule}</span>` : (r.delivered ? '<span class="sub">—</span>' : '<span class="sub">On track</span>')}</td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+  main.querySelectorAll('tr.clickable').forEach(tr => {
+    tr.onclick = () => openDrawer(tr.dataset.order);
+    tr.onkeydown = ev => { if (ev.key==='Enter') openDrawer(tr.dataset.order); };
+  });
+}
+
+function renderRules(){
+  const drugs = Object.entries(DRUGS);
+  main.innerHTML = `
+    <h1>Rules &amp; tiers</h1>
+    <p class="lede">Everything Stall Watch flags comes from these windows and rules. Nothing is learned or guessed, so every flag can be explained in one sentence.</p>
+    <h2>Expected windows by fulfillment path</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Path</th><th>Vendor acknowledges within</th><th>Ships within</th><th>Max gap between carrier scans</th></tr></thead>
+      <tbody>${Object.values(PATHS).map(p => `<tr><td><b>${p.label}</b></td><td>${p.ackDays ? plural(p.ackDays,'business day')+' of approval' : '— (scheduled)'}</td><td>${plural(p.shipDays,'business day')} of ${p.ackDays?'approval':'scheduled date'}</td><td>${plural(p.scanGap,'day')}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <p class="sub">Windows are illustrative defaults for the demo. In a real rollout they would be calibrated by replaying past orders (PRD, Timeline).</p>
+    <h2>Rules</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Rule</th><th>Fires when</th></tr></thead>
+      <tbody>${Object.entries(RULES).map(([k,r]) => `<tr><td><span class="chip rule">${k}</span> <b>${r.name}</b></td><td>${r.plain}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <h2>Criticality tiers <span class="sub" style="font-weight:500">· clinic-editable</span></h2>
+    <p class="sub" style="margin-top:0">Tiers are a starting point the clinic owns, not a clinical judgment the software makes. Change one and the queue re-ranks.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Item</th><th>Class</th><th>Tier</th></tr></thead>
+      <tbody>${drugs.map(([k,d]) => `<tr><td>${esc(d.name)}</td><td>${esc(d.cls)}</td><td>
+        <select data-tier="${k}" aria-label="Tier for ${esc(d.name)}">
+          <option value="critical" ${S.tiers[k]==='critical'?'selected':''}>Critical</option>
+          <option value="maintenance" ${S.tiers[k]==='maintenance'?'selected':''}>Maintenance</option>
+        </select></td></tr>`).join('')}</tbody>
+    </table></div>`;
+  main.querySelectorAll('[data-tier]').forEach(sel => sel.onchange = () => {
+    S.tiers[sel.dataset.tier] = sel.value;
+    toast(`${DRUGS[sel.dataset.tier].name.split(' ')[0]} set to ${sel.value}. Queue re-ranked.`);
+    render();
+  });
+}
+
+function renderHow(){
+  main.innerHTML = `
+    <h1>How it works</h1>
+    <p class="lede">With Vetcove Home Delivery, a clinic offers pet owners home delivery under its own name. When one of those orders gets stuck after the clinic approved it, the public reviews suggest the pet owner often notices first. Stall Watch is a concept for flipping that: the clinic finds out first, and the most urgent cases come first. Imagine it as a tab beside the order-approval queue.</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Every order gets a timeline</h3><p>When the clinic approves an order, Stall Watch writes down when it should be acknowledged, shipped, and moving. Compounded medicines get longer windows.</p></div>
+      <div class="step"><div class="n">2</div><h3>Simple rules watch it</h3><p>Five plain rules, like “not shipped by its ship-by date,” check every order each day. No guessing and no black box.</p></div>
+      <div class="step"><div class="n">3</div><h3>A miss becomes a task</h3><p>A broken rule creates a task the clinic owns: who has it, what was done, and a timestamped history.</p></div>
+      <div class="step"><div class="n">4</div><h3>Most urgent first</h3><p>The list is sorted by when the pet will run out and how critical the drug is, so insulin outranks a flea treatment.</p></div>
+    </div>
+    <div class="compare">
+      <div class="card"><h3>Without Stall Watch</h3><p class="prose">Maple’s insulin was approved Thursday and still hasn’t shipped. Nothing tells the clinic. On Wednesday Maple’s owner draws the last dose of insulin and calls, upset. The clinic’s name was on the order.</p></div>
+      <div class="card"><h3>With Stall Watch</h3><p class="prose">Tuesday morning, Maple’s order is #1 on the list: <b>not shipped by its ship-by date, 1 day of insulin left, critical.</b> Dana assigns it, the clinic offers pickup, and the owner hears from the clinic first.</p></div>
+    </div>
+    <h2>Try it</h2>
+    <ol class="prose">
+      <li>On <b>Stalled orders</b>, switch between <b>Urgency</b> and <b>Days late</b>. Watch the insulin and the flea treatment swap places.</li>
+      <li>Open any row to see <b>why it was flagged</b>, <b>why it’s ranked there</b>, and the run-out math.</li>
+      <li>Assign it, acknowledge it, then resolve it. Resolve stays locked until there’s an owner, a resolution, and a note.</li>
+      <li>Press <b>Advance 1 business day</b>. An order that was on track misses its window and appears as new; one that finally arrives closes itself.</li>
+      <li>On <b>Rules &amp; tiers</b>, mark the Cushing’s medicine as critical and watch the list re-rank.</li>
+    </ol>
+    <div class="card"><h3>What this prototype does not do</h3><p class="prose">It doesn’t send notifications, connect to any real pharmacy or practice software, suggest next steps, or warn at approval time. Those are next-phase ideas in the PRD. Everything here (clinic, pets, people, orders, dates) is made up, and the clock is simulated. Built only from public information; Vetcove’s real portal may already work differently.</p></div>
+    <p class="sub">Independent case study by Anvitha Abbagani, not an official Vetcove product.</p>`;
+}
+
+/* ---------- drawer ---------- */
+function openDrawer(orderId){
+  openId = orderId;
+  $('#drawer').classList.add('on'); $('#scrim').classList.add('on');
+  renderDrawer();
+  setTimeout(() => { const h = $('#drawerClose'); if (h) h.focus(); }, 50);
+}
+function closeDrawer(){
+  openId = null;
+  $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on');
+}
+function renderDrawer(){
+  const x = S.exceptions[openId]; if (!x) return closeDrawer();
+  const e = enrich(x);
+  const { o, r, sup } = e;
+  const all = Object.values(S.exceptions).filter(z => z.state!=='resolved').map(enrich);
+  const pos = ranked(all, S.sort).findIndex(z => z.o.id===o.id);
+  const p = PATHS[o.path];
+  const evs = o.events.filter(ev => ev[1] <= S.now);
+  const has = t => evs.find(ev => ev[0]===t);
+
+  const tl = [];
+  tl.push({ cls:'done', label: o.path==='autoship' ? 'Autoship cycle scheduled' : 'Approved by clinic', when: fmt(r.approved) });
+  if (p.ackDays){
+    tl.push(r.ack ? { cls:'done', label:'Vendor acknowledged', when:fmt(r.ack), exp:`due by ${fmt(r.ackBy)}` }
+                  : { cls: S.now > r.ackBy ? 'miss':'pend', label:'Vendor acknowledgment', when:'—', exp:`due by ${fmt(r.ackBy)}` });
+  }
+  tl.push(r.shipped ? { cls: r.shipped > r.shipBy ? 'miss':'done', label:'Shipped', when:fmt(r.shipped), exp:`due by ${fmt(r.shipBy)}` }
+                    : { cls: (S.now > r.shipBy && (r.ack || !p.ackDays)) ? 'miss':'pend', label:'Ship scan', when:'—', exp:`due by ${fmt(r.shipBy)}` });
+  evs.filter(ev => ev[0]==='scan').forEach(ev => tl.push({ cls:'done', label:`Carrier scan${ev[2] ? ': '+ev[2] : ''}`, when:fmt(ev[1]) }));
+  if (has('backorder')) { const b = has('backorder'); tl.push({ cls:'miss', label:b[2]||'Vendor backorder', when:fmt(b[1]) }); }
+  evs.filter(ev => ev[0]==='client_contact').forEach(ev => tl.push({ cls:'event', label:ev[2], when:fmt(ev[1]) }));
+  tl.push(r.delivered ? { cls:'done', label:'Delivered', when:fmt(r.delivered) } : { cls:'pend', label:'Delivered', when:'—' });
+
+  const math = sup.known
+    ? `<div>Last fill <b>${fmt(o.lastFill)}</b> · ${fmtNum(o.qty)} ${o.unit} ÷ ${fmtNum(o.dose)} ${o.unit}/day (“${esc(o.sig)}”)</div>
+       <div class="eq">= ${plural(sup.days,'day')} → runs out ${fmt(sup.runOut)} → ${supplyText(sup)} as of ${fmt(S.now)}</div>`
+    : `<div>Directions: “${esc(o.sig)}”. No daily dose can be read from this, so no run-out date is calculated.</div><div class="eq">Supply unknown. Ranked by days late instead.</div>`;
+
+  const resolved = x.state==='resolved';
+  const lateLine = r.rule ? lateText(e) : (r.delivered ? `now delivered ${fmt(r.delivered)}` : `now: ${r.status.toLowerCase()}`);
+  $('#drawer').innerHTML = `
+    <div class="drawer-head">
+      <div style="flex:1;min-width:0">
+        <div class="sub">${x.id} · order ${o.id} · ${PATHS[o.path].label}</div>
+        <h2 id="drawerTitle" style="margin:2px 0 4px;font-size:18px">${esc(o.pet)} <span class="sub" style="font-size:13px">${esc(o.species)} · ${esc(o.client)}</span></h2>
+        <div class="drug">${esc(DRUGS[o.drug].name)}</div>
+        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${chipState(x)} ${chipTier(e.tier)} <span class="chip rule">${x.rule}</span></div>
+      </div>
+      <button class="icon-btn" id="drawerClose" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="callout why"><b>Why this was flagged:</b> ${RULES[x.rule].plain} <span class="sub">(${lateLine}${x.rule==='R4'&&r.detail?' · '+esc(r.detail):''})</span></div>
+      ${resolved ? '' : `<div class="callout rank-why"><b>${S.sort==='urgency' ? `Ranked #${pos+1} by urgency.` : `#${pos+1} by days late.`}</b> ${rankWhy(e, S.sort)}</div>`}
+      <h3>Supply</h3>
+      <div class="math">${math}</div>
+      <h3>Expected vs. actual</h3>
+      <ul class="timeline">${tl.map(t => `<li><span class="dot ${t.cls}"></span><span>${esc(t.label)}${t.exp?` <span class="sub">· ${t.exp}</span>`:''}</span><span class="tl-when">${t.when}</span></li>`).join('')}</ul>
+      <h3>Ownership</h3>
+      ${resolved ? `<div class="callout" style="background:var(--ok-soft);border-color:transparent"><b>Resolved:</b> ${esc(x.resolution)}${x.owner?` · ${esc(x.owner.split(' · ')[0])}`:''}<div class="sub" style="margin-top:4px">${esc(x.note)}</div></div>` : `
+      <div class="form-grid">
+        <label class="f">Owner
+          <select id="fOwner"><option value="">Unassigned</option>${OWNERS.map(w => `<option ${x.owner===w?'selected':''}>${esc(w)}</option>`).join('')}</select>
+        </label>
+        <label class="f">Resolution
+          <select id="fRes"><option value="">Choose…</option>${RESOLUTIONS.map(w => `<option ${x.draftRes===w?'selected':''}>${esc(w)}</option>`).join('')}</select>
+        </label>
+      </div>
+      <label class="f" style="margin-top:10px">Note
+        <textarea id="fNote" placeholder="What happened and what the client was told">${esc(x.draftNote||'')}</textarea>
+      </label>
+      <div class="actions">
+        <button class="btn" id="bAck" ${x.state!=='open'?'disabled':''}>${x.state==='open'?'Acknowledge':'Acknowledged'}</button>
+        <button class="btn primary" id="bRes" disabled>Resolve</button>
+        <span class="req-note" id="reqNote"></span>
+      </div>`}
+      <h3>Audit trail</h3>
+      <ul class="audit">${x.audit.map(a => `<li><span>${esc(a.text)}</span><span class="who">${esc(a.actor)} · ${fmt(a.date)} ${a.time}</span></li>`).join('')}</ul>
+    </div>`;
+  $('#drawerClose').onclick = closeDrawer;
+  if (resolved) return;
+  const owner = $('#fOwner'), res = $('#fRes'), note = $('#fNote'), bRes = $('#bRes'), req = $('#reqNote');
+  const check = () => {
+    const miss = [];
+    if (!owner.value) miss.push('owner'); if (!res.value) miss.push('resolution'); if (!note.value.trim()) miss.push('note');
+    bRes.disabled = miss.length > 0;
+    req.textContent = miss.length ? `Needs: ${miss.join(', ')}` : '';
+  };
+  owner.onchange = () => {
+    const prev = x.owner; x.owner = owner.value;
+    audit(x, x.owner ? `Assigned to ${x.owner.split(' · ')[0]}${prev?` (was ${prev.split(' · ')[0]})`:''}` : 'Unassigned');
+    render();
+  };
+  res.onchange = () => { x.draftRes = res.value; check(); };
+  note.oninput = () => { x.draftNote = note.value; check(); };
+  check();
+  $('#bAck').onclick = () => { x.state='ack'; audit(x,'Acknowledged'); render(); toast('Acknowledged'); };
+  bRes.onclick = () => {
+    if (bRes.disabled) return;
+    x.state='resolved'; x.resolution=res.value; x.note=note.value.trim(); x.draftRes=''; x.draftNote='';
+    audit(x, `Resolved: ${x.resolution}`);
+    render(); toast(`Resolved: ${o.pet}`);
+  };
+}
+const fmtNum = n => Number.isInteger(n) ? String(n) : n.toFixed(3).replace(/0+$/,'');
+
+/* ---------- toast, theme, routing ---------- */
+let tt;
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'), 2600); }
+
+function currentTheme(){
+  const a = document.documentElement.getAttribute('data-theme');
+  if (a) return a;
+  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function paintThemeBtn(){ $('#themeBtn').textContent = currentTheme()==='dark' ? '☀' : '☾'; }
+$('#themeBtn').onclick = () => {
+  const next = currentTheme()==='dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('sw-theme', next); } catch(_) {}
+  paintThemeBtn();
+};
+try { const t = localStorage.getItem('sw-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch(_) {}
+paintThemeBtn();
+
+function route(){
+  const v = (location.hash.match(/^#\/(\w+)/)||[])[1];
+  view = ['exceptions','orders','rules','how'].includes(v) ? v : 'exceptions';
+  closeDrawer();
+  render();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', route);
+$('#scrim').onclick = closeDrawer;
+document.addEventListener('keydown', ev => { if (ev.key==='Escape' && openId) closeDrawer(); });
+
+$('#advanceBtn').onclick = () => {
+  if (S.advances >= MAX_ADVANCE) return;
+  S.now = addBiz(S.now, 1);
+  S.advances++;
+  const created = runRules();
+  S.newIds = created; S.flash = created.slice();
+  const closed = Object.values(S.exceptions).filter(x => x.resolution==='Delivered (auto-closed)' && x.audit[x.audit.length-1].date===S.now).length;
+  render();
+  const bits = [];
+  if (created.length) bits.push(`${plural(created.length,'new stalled order')}`);
+  if (closed) bits.push(`${closed} auto-closed on delivery`);
+  toast(`${fmtLong(S.now)}: ${bits.length ? bits.join(' · ') : 'no new stalls'}`);
+};
+$('#resetBtn').onclick = () => { init(); toast('Demo reset'); };
+
+function init(){
+  S = freshState();
+  runRules();
+  if (!location.hash) location.hash = '#/exceptions';
+  route();
+}
+init();
+})();
+</script>
+</body>
+</html>
