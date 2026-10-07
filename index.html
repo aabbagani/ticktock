@@ -3,310 +3,319 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>TickTock Concept</title>
-<meta name="description" content="TickTock: an independent concept for Vetcove Home Delivery. Clinic-first alerts for stalled home-delivery orders. Synthetic data. Not an official Vetcove product.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232f74d0'/%3E%3Cpath d='M16 7v10M16 22v2' stroke='white' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta name="description" content="TickTock: an independent concept for Vetcove Home Delivery. Clinic-first alerts for stuck home-delivery orders. Made-up data. Not an official Vetcove product.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f2124'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2350b4e8' stroke-width='2.6'/%3E%3Cpath d='M16 10.5V16l3.6 2.4' stroke='white' stroke-width='2.4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <style>
 :root{
-  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eef2f7; --border:#e1e6ed; --border-strong:#cdd5df;
-  --text:#2b3340; --text-2:#56606e; --text-3:#8a94a3;
-  --brand:#2f74d0; --brand-ink:#ffffff; --brand-soft:#e7f0fb;
-  --bar:#23272e; --bar-ink:#f2f4f7; --bar-2:#2f343c;
-  --title:#3d7dd8; --go:#1fa37a;
-  --crit:#b42318; --crit-soft:#fdecea; --warn:#a15c07; --warn-soft:#fdf3e2;
-  --ok:#1b7f3b; --ok-soft:#e8f5ec; --info:#2457c5; --info-soft:#e9effc; --muted-soft:#eef0f3;
-  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
-  --shadow-lg:0 12px 32px rgba(16,24,40,.18);
-  --radius:10px; --radius-sm:6px;
-  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --page:#f4f6f9; --white:#fff; --line:#e3e7ed; --line-2:#d3d9e1;
+  --ink:#2f3a4c; --ink-2:#5d687a; --ink-3:#97a0ae;
+  --blue:#3d8fe0; --title:#4a8fe2;
+  --green:#22a37a; --green-soft:#e8f6ef;
+  --red:#d9534f; --amber:#d9861c;
+  --bar:#1f2124;
+  --font:"Lato","Helvetica Neue",Helvetica,"Segoe UI",Arial,sans-serif;
   color-scheme:light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0f1217; --surface:#171b22; --surface-2:#1e232c; --border:#2a303b; --border-strong:#3a414e;
-    --text:#e8ebf0; --text-2:#b3bac6; --text-3:#8a93a2;
-    --brand:#5b9bf0; --brand-ink:#0b1a30; --brand-soft:#15253d;
-    --bar:#0b0d11; --bar-ink:#e8ebf0; --bar-2:#1c2028; --title:#7fb0f5; --go:#3cc796;
-    --crit:#ff7a6b; --crit-soft:#3a1714; --warn:#f0b35a; --warn-soft:#352610;
-    --ok:#5fd08a; --ok-soft:#12301d; --info:#8fb0ff; --info-soft:#18233d; --muted-soft:#232831;
-    --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-lg:0 12px 32px rgba(0,0,0,.55);
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0f1217; --surface:#171b22; --surface-2:#1e232c; --border:#2a303b; --border-strong:#3a414e;
-  --text:#e8ebf0; --text-2:#b3bac6; --text-3:#8a93a2;
-  --brand:#5b9bf0; --brand-ink:#0b1a30; --brand-soft:#15253d;
-  --bar:#0b0d11; --bar-ink:#e8ebf0; --bar-2:#1c2028; --title:#7fb0f5; --go:#3cc796;
-  --crit:#ff7a6b; --crit-soft:#3a1714; --warn:#f0b35a; --warn-soft:#352610;
-  --ok:#5fd08a; --ok-soft:#12301d; --info:#8fb0ff; --info-soft:#18233d; --muted-soft:#232831;
-  --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-lg:0 12px 32px rgba(0,0,0,.55);
-  color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font:14px/1.45 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-button,select,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
-:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+body{background:var(--page);color:var(--ink);font:16px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
-/* disclaimer + top bar */
-.disclaimer{background:var(--surface-2);border-bottom:1px solid var(--border);color:var(--text-2);font-size:12px;padding:6px 16px;text-align:center}
-.topbar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{width:30px;height:30px;border-radius:8px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;flex:none}
-.brand-name{font-weight:650;white-space:nowrap}
-.brand-sub{color:var(--text-3);font-size:12px;white-space:nowrap}
-.brand-tag{font-weight:500;color:var(--text-3);font-size:12.5px}
-.logo{font-size:12px;letter-spacing:.02em}
-.spacer{flex:1}
-.clock{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:4px 4px 4px 12px}
-.clock-label{font-size:12px;color:var(--text-3)}
-.clock-date{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.btn{border:1px solid var(--border-strong);background:var(--surface);border-radius:var(--radius-sm);padding:6px 12px;font-weight:550;line-height:1.2}
-.btn:hover{background:var(--surface-2)}
-.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
-.btn.primary:hover{filter:brightness(1.07)}
-.btn.pill{border-radius:999px}
-.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
-.icon-btn{border:1px solid var(--border);background:var(--surface);border-radius:999px;width:34px;height:34px;display:grid;place-items:center}
-.icon-btn:hover{background:var(--surface-2)}
+.strip{background:#eceff3;color:var(--ink-2);font-size:12.5px;text-align:center;padding:5px 16px}
+.bar{background:var(--bar);color:#fff;position:sticky;top:0;z-index:10}
+.bar-in{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:12px 20px}
+.word{font-weight:800;font-size:22px;letter-spacing:.07em;color:#fff;text-decoration:none}
+.vclogo{height:30px;width:auto;display:block}
+@media (max-width:640px){.vclogo{height:24px}}
+.crumb{color:#9aa3ae;font-size:14px;white-space:nowrap}
+.sp{flex:1}
+.today{color:#cfd4db;font-size:14px;white-space:nowrap}
+.today b{color:#fff}
+.next{background:var(--green);color:#fff;border:0;border-radius:4px;padding:8px 14px;font-weight:700;font-size:14px;white-space:nowrap}
+.next:disabled{opacity:.45;cursor:not-allowed}
+.reset{background:transparent;border:0;color:#9aa3ae;font-size:14px;text-decoration:underline;padding:4px}
 
-/* layout */
-.shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 90px)}
-.nav{border-right:1px solid var(--border);background:var(--surface);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
-.nav a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--text-2);text-decoration:none;font-weight:550}
-.nav a:hover{background:var(--surface-2);color:var(--text)}
-.nav a[aria-current="page"]{background:var(--brand-soft);color:var(--brand)}
-.nav .count{background:var(--crit);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;font-weight:700}
-.nav-foot{margin-top:auto;padding:10px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border)}
-main{padding:20px 24px 80px;min-width:0}
-h1{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}
-h2{font-size:16px;margin:24px 0 8px}
-h3{font-size:14px;margin:16px 0 6px}
-.lede{color:var(--text-2);margin:0 0 16px;max-width:760px}
+main{max-width:820px;margin:0 auto;padding:28px 20px 24px}
+h1{font-size:32px;font-weight:300;margin:0;color:var(--ink);line-height:1.2}
+.lead{color:var(--ink-2);font-size:17px;margin:6px 0 4px}
+.sortline{font-size:14px;color:var(--ink-3);margin:0 0 18px}
+.sortline button{border:0;background:none;color:var(--blue);padding:0;font-size:14px;text-decoration:underline}
 
-/* tiles */
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 16px}
-.tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow)}
-.tile .k{color:var(--text-3);font-size:12px;font-weight:550}
-.tile .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
-.tile.crit .v{color:var(--crit)}
+.list{display:flex;flex-direction:column;gap:10px}
+.card{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 18px;cursor:pointer;text-align:left;width:100%}
+.card:hover{border-color:var(--blue)}
+.card.flash{animation:flash 1.8s ease-out}
+@keyframes flash{0%{background:#fff4dc}100%{background:#fff}}
+.num{font-size:22px;font-weight:300;color:var(--ink-3);width:26px;text-align:center;flex:none}
+.num.first{color:var(--red)}
+.body{flex:1;min-width:0}
+.who{font-size:18px;color:var(--ink)}
+.who b{font-weight:700}
+.left{font-weight:700;font-size:15px;margin-top:2px}
+.left.red{color:var(--red)} .left.amber{color:var(--amber)} .left.ok{color:var(--green)} .left.grey{color:var(--ink-3)} .left.plain{color:var(--ink)}
+.why{color:var(--ink-2);font-size:14px;margin-top:2px}
+.tag{display:inline-block;background:var(--amber);color:#fff;font-size:11px;font-weight:700;border-radius:3px;padding:1px 6px;margin-left:6px;vertical-align:2px;letter-spacing:.04em}
+.fix{flex:none;background:#fff;border:1.5px solid var(--blue);color:var(--blue);border-radius:4px;padding:7px 16px;font-weight:700;font-size:14px}
+.card:hover .fix{background:var(--blue);color:#fff}
+.empty{background:#fff;border:1px dashed var(--line-2);border-radius:6px;padding:28px;text-align:center;color:var(--ink-2)}
 
-/* toolbar */
-.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--surface)}
-.seg button{border:0;background:transparent;padding:6px 12px;font-weight:550;color:var(--text-2)}
-.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
-.seg button+button{border-left:1px solid var(--border-strong)}
-.toolbar .hint{color:var(--text-3);font-size:12px}
+.done{margin-top:28px}
+.done summary{cursor:pointer;color:var(--ink-2);font-size:15px}
+.done ul{list-style:none;padding:0;margin:10px 0 0}
+.done li{padding:8px 0;border-bottom:1px dotted var(--line-2);font-size:14.5px;color:var(--ink-2)}
+.done li b{color:var(--ink)}
+.done li .ck{color:var(--green);font-weight:700;margin-right:6px}
 
-/* queue */
-.queue{display:flex;flex-direction:column;gap:8px}
-.row{display:grid;grid-template-columns:44px minmax(0,2.1fr) minmax(0,1.7fr) minmax(0,1.1fr) minmax(0,1fr);gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);text-align:left;width:100%;transition:border-color .15s, transform .15s}
-.row:hover{border-color:var(--border-strong)}
-.row.flash{animation:flash 1.6s ease-out}
-@keyframes flash{0%{box-shadow:0 0 0 3px var(--warn)}100%{box-shadow:var(--shadow)}}
-.rank{font-weight:700;font-variant-numeric:tabular-nums;font-size:16px;color:var(--text-3);text-align:center}
-.rank.top{color:var(--crit)}
-.pet{font-weight:650;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.sub{color:var(--text-3);font-size:12px}
-.drug{font-weight:550}
-.cell-label{display:none;color:var(--text-3);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
-.supply{font-weight:650;font-variant-numeric:tabular-nums}
-.supply.crit{color:var(--crit)} .supply.warn{color:var(--warn)} .supply.unknown{color:var(--text-3);font-weight:550}
-.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:650;white-space:nowrap;border:1px solid transparent}
-.chip.crit{background:var(--crit-soft);color:var(--crit)}
-.chip.maint{background:var(--muted-soft);color:var(--text-2)}
-.chip.rule{background:var(--info-soft);color:var(--info);white-space:normal;line-height:1.3;padding:2px 8px}
-.row > div{min-width:0}
-.chip.open{background:var(--warn-soft);color:var(--warn)}
-.chip.ack{background:var(--info-soft);color:var(--info)}
-.chip.res{background:var(--ok-soft);color:var(--ok)}
-.chip.new{background:var(--warn);color:#fff}
-.empty{background:var(--surface);border:1px dashed var(--border-strong);border-radius:var(--radius);padding:28px;text-align:center;color:var(--text-2)}
+footer{max-width:820px;margin:0 auto;padding:0 20px 20px;font-size:13px;color:var(--ink-3)}
+footer a{color:var(--blue)}
 
-/* table */
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;box-shadow:var(--shadow)}
-table{border-collapse:collapse;width:100%;min-width:640px}
-th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
-th{font-size:12px;color:var(--text-3);font-weight:600;background:var(--surface-2);position:sticky;top:0}
-tr:last-child td{border-bottom:0}
-td select{border:1px solid var(--border-strong);background:var(--surface);border-radius:6px;padding:4px 6px}
-tr.clickable{cursor:pointer} tr.clickable:hover td{background:var(--surface-2)}
-
-/* drawer */
-.scrim{position:fixed;inset:0;background:rgba(10,14,20,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+/* panel */
+.scrim{position:fixed;inset:0;background:rgba(25,32,44,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .16s}
 .scrim.on{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;height:100%;width:min(560px,100%);background:var(--surface);z-index:50;box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column}
-.drawer.on{transform:none}
-.drawer-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
-.drawer-body{padding:4px 18px 28px;overflow:auto;flex:1}
-.callout{border-radius:var(--radius);padding:10px 12px;margin:12px 0;border:1px solid var(--border)}
-.callout.why{background:var(--warn-soft);border-color:transparent}
-.callout.rank-why{background:var(--surface-2)}
-.callout b{font-weight:650}
-.math{font-variant-numeric:tabular-nums;background:var(--surface-2);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px}
-.math .eq{font-weight:650}
-.timeline{list-style:none;margin:0;padding:0}
-.timeline li{display:grid;grid-template-columns:18px 1fr auto;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);align-items:start}
-.timeline li:last-child{border-bottom:0}
-.dot{width:12px;height:12px;border-radius:50%;margin-top:4px;border:2px solid var(--border-strong);background:var(--surface)}
-.dot.done{background:var(--ok);border-color:var(--ok)}
-.dot.miss{background:var(--crit);border-color:var(--crit)}
-.dot.pend{border-style:dashed}
-.dot.event{background:var(--info);border-color:var(--info)}
-.tl-when{font-size:12px;color:var(--text-3);white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-2);font-weight:550}
-label.f select,label.f textarea{border:1px solid var(--border-strong);background:var(--surface);border-radius:6px;padding:7px 8px;font-size:14px;color:var(--text)}
-label.f textarea{min-height:64px;resize:vertical}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
-.req-note{font-size:12px;color:var(--text-3)}
-.audit{list-style:none;padding:0;margin:0;font-size:13px}
-.audit li{padding:6px 0;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;gap:10px}
-.audit li:last-child{border-bottom:0}
-.audit .who{color:var(--text-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.panel{position:fixed;left:50%;top:50%;width:min(560px,calc(100% - 32px));max-height:calc(100% - 40px);overflow:auto;background:#fff;border-radius:8px;z-index:50;box-shadow:0 18px 50px rgba(20,30,50,.25);transform:translate(-50%,-48%);opacity:0;pointer-events:none;transition:all .16s;padding:26px 26px 22px}
+.panel.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.x{position:absolute;top:10px;right:12px;border:0;background:none;font-size:28px;line-height:1;color:var(--ink-3)}
+.p-title{font-size:24px;font-weight:400;margin:0 30px 4px 0;line-height:1.25}
+.p-sub{color:var(--ink-3);font-size:14px}
+.p-left{font-size:20px;font-weight:700;margin:14px 0 18px}
+.p-ask{font-weight:700;margin-bottom:8px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.choice{background:#fff;border:1px solid var(--line-2);border-radius:5px;padding:12px;text-align:left;font-size:15px;color:var(--ink)}
+.choice:hover{border-color:var(--green);background:var(--green-soft)}
+details.more{margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+details.more summary{cursor:pointer;color:var(--blue);font-size:14px}
+.tl{list-style:none;padding:0;margin:10px 0 0}
+.tl li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14px;border-bottom:1px dotted var(--line-2)}
+.tl li:last-child{border-bottom:0}
+.tl .bad{color:var(--red)}
+.tl .when{color:var(--ink-3);white-space:nowrap}
+.note{font-size:13.5px;color:var(--ink-2);margin-top:10px}
+.p-done{background:var(--green-soft);border-radius:5px;padding:12px 14px;color:#176b52}
 
 /* how it works */
-.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0}
-.step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
-.step .n{width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:13px;margin-bottom:8px}
-.step h3{margin:0 0 4px}
-.step p{margin:0;color:var(--text-2);font-size:13px}
-.prose{max-width:760px;color:var(--text-2)}
-.prose b{color:var(--text)}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin:12px 0}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.compare .card h3{margin-top:0}
+.how h1{color:var(--title);font-size:28px}
+.how .lead{margin:4px 0 0}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.step{background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 14px}
+.step b{display:block;font-size:17px;margin-bottom:2px}
+.step span{color:var(--ink-2);font-size:15px}
+.rules{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 16px;font-size:15px;color:var(--ink-2)}
+.rules b{color:var(--ink)}
+.rules ul{margin:6px 0 0;padding-left:20px}
+.back{border:0;background:none;color:var(--blue);padding:0;font-size:15px;margin-bottom:12px}
 
-.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 14px;border-radius:8px;font-weight:550;opacity:0;transition:all .2s;z-index:60;max-width:calc(100% - 32px)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(16px);background:#2b2f35;color:#fff;padding:11px 16px;border-radius:5px;font-size:14px;opacity:0;transition:all .2s;z-index:60;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translateX(-50%)}
-.mobile-nav{display:none}
 
+.explain{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:#fff;border:1px solid var(--line);border-radius:6px;margin:0 0 22px;overflow:hidden}
+.explain div{padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--ink-2);line-height:1.35}
+.explain div+div{border-left:1px solid var(--line)}
+.explain .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:13px;display:grid;place-items:center}
+.explain b{color:var(--ink);display:block;font-size:15px}
+.howbtn{background:var(--blue);border:1px solid var(--blue);color:#fff;border-radius:4px;padding:8px 14px;font-size:14px;font-weight:700;white-space:nowrap;text-decoration:none}
+.howbtn:hover{background:#2f7fd0;border-color:#2f7fd0}
 
-/* --- reference styling: public Vetcove marketing screens (pattern only; no logo, no brand assets) --- */
-.topbar{background:var(--bar);border-bottom:0;color:var(--bar-ink)}
-.topbar .brand-name{color:var(--bar-ink);letter-spacing:.01em}
-.topbar .brand-sub,.topbar .brand-tag{color:#9aa4b2}
-.topbar .logo{background:transparent;border:2px solid var(--bar-ink);color:var(--bar-ink);border-radius:9px}
-.topbar .clock{background:var(--bar-2);border-color:#3a404a}
-.topbar .clock-label{color:#9aa4b2}.topbar .clock-date{color:var(--bar-ink)}
-.topbar .btn:not(.primary){background:transparent;border-color:#4a515c;color:var(--bar-ink)}
-.topbar .btn:not(.primary):hover{background:var(--bar-2)}
-.topbar .icon-btn{background:transparent;border-color:#4a515c;color:var(--bar-ink)}
-.btn.primary{background:var(--go);border-color:var(--go);color:#fff;text-transform:uppercase;font-size:12.5px;letter-spacing:.04em;font-weight:700}
-h1{font-weight:400;font-size:26px;color:var(--title);letter-spacing:-.005em}
-h2{font-weight:500;color:var(--text)}
-.lede{font-size:15px}
-.nav{padding:0;gap:0;background:var(--surface)}
-.nav a{border-radius:0;padding:14px 16px;border-bottom:1px solid var(--border);font-weight:500;color:var(--text-2)}
-.nav a[aria-current="page"]{background:var(--surface-2);color:var(--text);font-weight:650;box-shadow:inset 3px 0 0 var(--brand)}
-.nav .count{background:var(--brand)}
-.tile{box-shadow:none}
-.tile .k{text-transform:uppercase;letter-spacing:.06em;font-size:11px;font-weight:700}
-.tile .v{font-weight:400;font-size:28px;color:var(--text)}
-.tile.crit .v{color:var(--crit)}
-.row{box-shadow:none;border-radius:4px;padding:14px 16px}
-.row:hover{border-color:var(--brand)}
-.row .drug{color:var(--title);font-weight:500}
-.rank{font-weight:400;font-size:18px}
-.supply{font-weight:600}
-.supply:not(.crit):not(.warn):not(.unknown){color:var(--go)}
-.cell-label{display:inline;color:var(--text-3);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
-.seg{border-radius:4px}
-.seg button[aria-pressed="true"]{background:var(--brand)}
-.table-wrap,.card,.step{box-shadow:none;border-radius:4px}
-th{text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;font-weight:700}
-.drawer-head h2{color:var(--title);font-weight:400}
-.drawer h3{text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--text-3);font-weight:700;margin-top:20px}
-.audit li{border-bottom-style:dotted}
-.timeline li{border-bottom-style:dotted}
-.step .n{background:var(--brand)}
+.search{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line-2);border-radius:6px;padding:0 12px;margin:0 0 12px;height:44px}
+.search svg{flex:none;color:var(--ink-3)}
+.search input{flex:1;border:0;outline:0;font:inherit;font-size:16px;color:var(--ink);background:transparent;min-width:0}
+.search input::placeholder{color:var(--ink-3)}
+.match{font-size:14px;color:var(--ink-2);margin:-4px 0 12px}
+.tier{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#f7f9fb;border:1px solid var(--line);border-radius:5px;padding:10px 12px;margin:-6px 0 18px}
+.tier .t{font-size:14.5px;color:var(--ink)}
+.tier .h{display:block;font-size:12.5px;color:var(--ink-3)}
+.sw{position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px;color:var(--ink-2);flex:none}
+.sw input{position:absolute;opacity:0;width:1px;height:1px}
+.sw .tr{width:38px;height:22px;border-radius:11px;background:#cfd6df;position:relative;transition:background .15s}
+.sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s}
+.sw input:checked + .tr{background:var(--red)}
+.sw input:checked + .tr::after{left:19px}
+.sw input:focus-visible + .tr{outline:2px solid var(--blue);outline-offset:2px}
+.sw .lbl{min-width:58px;font-weight:700}
+.hist{list-style:none;padding:0;margin:8px 0 0}
+.hist li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14px;border-bottom:1px dotted var(--line-2)}
+.hist li:last-child{border-bottom:0}
+.hist .who{color:var(--ink-3);white-space:nowrap;text-align:right;font-size:13px}
+.sub-h{font-weight:700;font-size:13px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 2px}
+.done li{padding:0;border-bottom:1px dotted var(--line-2)}
+.done li button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;background:none;border:0;padding:9px 2px;text-align:left;font-size:14.5px;color:var(--ink-2)}
+.done li button:hover{color:var(--ink)}
+.done li .d{color:var(--blue);font-size:13.5px;white-space:nowrap}
 
-@media (max-width: 900px){
-  .shell{grid-template-columns:1fr}
-  .nav{display:none}
-  main{padding:16px 16px 96px}
-  .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:30;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-  .mobile-nav a{flex:1;text-align:center;padding:6px 2px;color:var(--text-3);text-decoration:none;font-size:11.5px;font-weight:600;border-radius:8px;position:relative}
-  .mobile-nav a[aria-current="page"]{color:var(--brand);background:var(--brand-soft)}
-  .mobile-nav .count{position:absolute;top:0;right:12%;background:var(--crit);color:#fff;border-radius:999px;font-size:10px;padding:0 5px}
-  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .row{grid-template-columns:34px minmax(0,1fr);row-gap:6px}
-  .row > .c-drug,.row > .c-supply,.row > .c-state{grid-column:2}
-  .cell-label{display:inline;margin-right:4px}
-  .row > .c-supply,.row > .c-state{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-  .row > .c-supply > div,.row > .c-state > div{margin-top:0 !important}
-  .steps{grid-template-columns:1fr 1fr}
-  .compare{grid-template-columns:1fr}
-  .brand-sub{display:none}
-  .brand-tag{display:block;font-size:11.5px;white-space:normal;line-height:1.25}
-  .topbar{gap:8px;flex-wrap:wrap}
-  .brand{flex:1 1 0;min-width:0}
-  .brand-name{overflow:hidden;text-overflow:ellipsis}
-  .spacer{display:none}
-  .clock{order:3;width:100%;justify-content:space-between}
-  .topbar .btn.primary{text-transform:none;letter-spacing:0;font-size:13px;white-space:nowrap}
-  .toolbar .seg{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .toolbar .seg button{padding:6px 10px;white-space:nowrap;flex:none}
-  .toolbar .hint{width:100%}
-}
-@media (max-width: 480px){
-  .steps{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr}
-  .clock-label{display:none}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;font-size:13.5px;color:var(--ink-2);margin:0 0 4px}
+.legend .k{color:var(--ink-3)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
+.legend .r{background:var(--red)} .legend .a{background:var(--amber)} .legend .g{background:var(--green)} .legend .u{background:#c6ccd5}
+.legend-note a{color:var(--blue)}
+.legend-note{font-size:13px;color:var(--ink-3);margin:0 0 14px}
+
+.tabs{background:#fff;border-bottom:1px solid var(--line)}
+.tabs-in{max-width:820px;margin:0 auto;display:flex;gap:4px;padding:0 20px;overflow-x:auto}
+.tabs a{padding:12px 12px;color:var(--ink-2);text-decoration:none;font-size:15px;white-space:nowrap;border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+.tabs .cnt{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:700;text-align:center}
+.meds{background:#fff;border:1px solid var(--line);border-radius:6px}
+.med{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.med:last-child{border-bottom:0}
+.med .nm{font-size:16px;color:var(--ink)}
+.med .on-list{display:block;font-size:13px;color:var(--ink-3)}
+.showall{border:0;background:none;color:var(--blue);padding:0;font-size:14px;text-decoration:underline;margin-top:12px}
+
+.howto{background:#fff;border:1px solid #cfe2f6;border-left:4px solid var(--blue);border-radius:4px;padding:12px 14px;color:var(--ink-2);font-size:15px;margin:10px 0 16px}
+.howto b{color:var(--ink)} .howto a{color:var(--blue)}
+.medbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:5px;overflow:hidden;background:#fff}
+.seg button{border:0;background:none;padding:7px 12px;font-size:14px;color:var(--ink-2)}
+.seg button+button{border-left:1px solid var(--line-2)}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff;font-weight:700}
+.tiny{font-size:13px;color:var(--ink-3)}
+.tablewrap{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.medtable{width:100%;border-collapse:collapse}
+.medtable th{text-align:left;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:10px 14px;background:#fafbfc;border-bottom:1px solid var(--line)}
+.medtable td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14.5px}
+.medtable tr:last-child td{border-bottom:0}
+.medtable .nm{display:block;color:var(--ink);font-size:15.5px}
+.medtable .gen{display:block;color:var(--ink-3);font-size:12.5px}
+.medtable .c-use{color:var(--ink-2)}
+.medtable .c-sw{width:150px}
+.olink{border:1px solid var(--blue);background:#fff;color:var(--blue);border-radius:4px;padding:3px 9px;font-size:13.5px;font-weight:700;margin:2px 4px 2px 0}
+.olink:hover{background:var(--blue);color:#fff}
+.none{color:var(--ink-3)}
+
+.rlist{list-style:none;margin:10px 0 0;padding:0}
+.rlist li{display:flex;gap:12px;align-items:flex-start;padding:5px 0;border-bottom:1px dotted var(--line-2)}
+.rlist li:last-child{border-bottom:0}
+.rid{flex:none;min-width:34px;text-align:center;background:var(--page);border:1px solid var(--line-2);border-radius:4px;font-size:12.5px;font-weight:700;color:var(--ink-2);padding:2px 0}
+.rlist b{color:var(--ink)}
+
+.medtable .nm2{display:block;color:var(--ink);font-size:15px}
+.olink.stuck{border-color:var(--red);color:var(--red)}
+.olink.stuck:hover{background:var(--red);color:#fff}
+.st-ok{color:var(--green);font-weight:700;display:block}
+.st-done{color:var(--ink-2);font-weight:700;display:block}
+.stuckrow td{background:#fffafa}
+
+.st-on{color:var(--green);font-weight:700;display:block}
+.st-muted{color:var(--ink-2);font-weight:700;display:block}
+.seeall{color:var(--blue);font-size:15px;text-decoration:none;white-space:nowrap}
+.headrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ordtable td.c-st{width:230px}
+
+.waitcount{font-size:15px;color:var(--amber);font-weight:700}
+.done.waiting summary{color:var(--amber);font-weight:700}
+.hg{margin-right:6px}
+.rec{border:1.5px solid var(--line-2);border-radius:8px;padding:14px;margin:4px 0 10px}
+.rec.is-rec{border-color:var(--green);background:#f6fcf9}
+.rec-h{font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:3px;padding:2px 7px}
+.rec-why{color:var(--ink-2);font-size:14.5px;margin:4px 0 10px}
+.flabel{display:block;font-size:13px;font-weight:700;color:var(--ink-2);margin:6px 0 6px}
+.msg{display:block;width:100%;min-height:84px;margin-top:0;font:inherit;font-size:14.5px;line-height:1.45;color:var(--ink);border:1px solid var(--line-2);border-radius:5px;padding:9px 10px;resize:vertical;background:#fff}
+.others .link{border:0;background:none;padding:0;color:var(--blue);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer}
+.others .link:hover{color:var(--ink)}
+.go{display:block;width:100%;margin-top:10px;background:var(--green);color:#fff;border:0;border-radius:5px;padding:11px;font-weight:700;font-size:15px}
+.go:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:#fff;border:1px solid var(--line-2);border-radius:5px;padding:11px;font-size:15px;color:var(--ink);margin-top:10px}
+.row-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row-btns .go{margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{background:#fff;border:1px solid var(--line-2);border-radius:16px;padding:6px 12px;font-size:14px;color:var(--ink)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.chips input[type=date]{border:1px solid var(--line-2);border-radius:16px;padding:5px 10px;font:inherit;font-size:14px;color:var(--ink)}
+.hint-i{display:block;font-weight:400;color:var(--ink-3);font-size:12.5px;margin-top:2px}
+.check{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14.5px;color:var(--ink);cursor:pointer}
+.check input{width:17px;height:17px}
+.declined{background:#f3f5f8;border-left:3px solid var(--ink-3);border-radius:4px;padding:8px 12px;font-size:14px;color:var(--ink-2);margin:-6px 0 12px}
+.warn-line{margin-top:8px;font-size:13.5px;color:#9a5b00;background:#fff4e0;border-radius:4px;padding:7px 10px}
+.sel{width:100%;border:1px solid var(--line-2);border-radius:5px;padding:9px 10px;font:inherit;font-size:15px;background:#fff}
+.others{font-size:14px;color:var(--ink-2);margin-bottom:14px;line-height:1.8}
+.others .link{font-size:14px}
+.p-wait{background:#fff7ea;border-left:3px solid var(--amber);border-radius:4px;padding:10px 12px;margin-top:14px;font-size:15px;color:var(--ink)}
+
+.me{color:#c9ced6;font-size:14px;white-space:nowrap}
+.me b{color:#fff}
+.assignee{display:block;font-size:13px;color:var(--ink-3);margin-top:2px}
+.assignee.mine{color:var(--blue);font-weight:700}
+.assignee.other{color:var(--ink-2);font-weight:700}
+.assign{display:flex;align-items:center;gap:10px;margin:12px 0 4px;font-size:14px;color:var(--ink-2)}
+.assign select{border:1px solid var(--line-2);border-radius:5px;padding:6px 8px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.lockmsg{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#eef4fc;border-left:3px solid var(--blue);border-radius:4px;padding:10px 12px;margin:10px 0 12px;font-size:14.5px;color:var(--ink)}
+.lockmsg button{background:var(--blue);color:#fff;border:0;border-radius:5px;padding:7px 12px;font-weight:700;font-size:14px}
+.locked{opacity:.45;pointer-events:none;filter:grayscale(.3)}
+.stockline{font-size:13px;color:var(--ink-2);background:#f3f6fa;border-radius:4px;padding:7px 10px;margin:0 0 8px}
+
+.rhead{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.override{font-size:14px;color:var(--ink-2);background:#fdecea;border-left:3px solid var(--red);border-radius:4px;padding:6px 10px}
+.rlist .rtxt{flex:1;min-width:0}
+.rfix{flex:none;width:250px;text-align:right;font-size:13.5px;font-weight:700;color:var(--green)}
+.rfix::before{content:"→ ";color:var(--ink-3);font-weight:400}
+.rfoot{font-size:13.5px;color:var(--ink-3);margin-top:6px}
+.rfoot b{color:var(--ink-2)}
+
+@media (max-width:640px){
+  .bar-in{flex-wrap:wrap;gap:8px 12px;padding:10px 16px}
+  .crumb{display:none}
+  .rlist li{flex-wrap:wrap}
+  .rfix{max-width:none;width:100%;text-align:left;padding-left:46px}
+  .me{order:4;width:100%;font-size:13px}
+  .medtable .c-use{display:none}
+  .medtable thead{display:none}
+  .medtable tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .medtable tr:last-child{border-bottom:0}
+  .medtable td{border:0 !important;padding:0 !important;grid-column:1}
+  .medtable td.c-sw{grid-column:2;grid-row:1 / span 3;align-self:center}
+  .ordtable td.c-st{width:auto}
+  .medtable td:nth-child(2) .gen{display:none}
+  .medtable td:nth-child(2) .nm2{font-size:14.5px;color:var(--ink-2)}
+  .medtable td .olink{margin:2px 0}
+  .medtable tr.stuckrow{background:#fffafa}
+  .medtable tr.stuckrow td{background:transparent}
+  .medtable .gen{font-size:12px}
+  .medtable td,.medtable th{padding:9px 10px}
+  .medtable .c-sw{width:auto}
+  .medtable .sw .lbl{display:none}
+  .seg button{padding:7px 9px;font-size:13px}
+  .tabs-in{padding:0 8px}
+  .tabs a{padding:11px 9px;font-size:14px}
+  .today{order:3}
+  main{padding:22px 16px 30px}
+  h1{font-size:26px}
+  .lead{font-size:16px}
+  .card{padding:14px;gap:12px}
+  .who{font-size:17px}
+  .fix{padding:6px 12px}
+  .choices,.steps{grid-template-columns:1fr}
+  .row-btns{grid-template-columns:1fr}
+  .explain{grid-template-columns:1fr}
+  .explain div+div{border-left:0;border-top:1px solid var(--line)}
+  .explain div{padding:9px 12px}
+  .panel{width:100%;height:100%;max-height:100%;border-radius:0;top:0;left:0;transform:translateY(12px)}
+  .panel.on{transform:none}
 }
 </style>
 </head>
 <body>
-<div class="disclaimer">Independent case study by Anvitha Abbagani, not an official Vetcove product. Fictional clinic, synthetic data, simulated clock.</div>
+<div class="strip">Concept mockup by Anvitha Abbagani, not a Vetcove product or screen. Made-up clinic and data.</div>
+<header class="bar"><div class="bar-in">
+  <a class="word" href="#/">TICKTOCK</a><span class="crumb">Concept for Vetcove Home Delivery</span>
+  <span class="sp"></span>
+  <span class="me" title="Signed in">Signed in as <b>Jane Doe</b></span>
+  <a class="howbtn" href="#/how" id="howBtn">How it works</a>
+</div></header>
 
-<header class="topbar">
-  <div class="brand">
-    <div class="logo" aria-hidden="true">TT</div>
-    <div style="min-width:0">
-      <div class="brand-name">TickTock <span class="brand-tag">concept for Vetcove Home Delivery</span></div>
-      <div class="brand-sub">Clinic view · Maple Street Animal Hospital (fictional)</div>
-    </div>
-  </div>
-  <div class="spacer"></div>
-  <div class="clock" aria-live="polite">
-    <span class="clock-label">Simulated today</span>
-    <span class="clock-date" id="clockDate"></span>
-    <button class="btn pill primary" id="advanceBtn" title="Move the simulated clock forward one business day and re-check every order">Advance 1 business day</button>
-  </div>
-  <button class="btn" id="resetBtn" title="Restore the original demo data">Reset</button>
-  <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle light/dark"></button>
-</header>
-
-<div class="shell">
-  <nav class="nav" aria-label="Sections">
-    <a href="#/exceptions" data-view="exceptions">Stalled orders <span class="count" id="navCount"></span></a>
-    <a href="#/orders" data-view="orders">All orders</a>
-    <a href="#/rules" data-view="rules">Rules &amp; tiers</a>
-    <a href="#/how" data-view="how">How it works</a>
-    <div class="nav-foot">Signed in as <b>Dana R.</b><br>Practice Manager</div>
-  </nav>
-  <main id="main" tabindex="-1"></main>
-</div>
-
-<nav class="mobile-nav" aria-label="Sections">
-  <a href="#/exceptions" data-view="exceptions">Stalled <span class="count" id="navCountM"></span></a>
-  <a href="#/orders" data-view="orders">Orders</a>
-  <a href="#/rules" data-view="rules">Rules</a>
-  <a href="#/how" data-view="how">How it works</a>
-</nav>
+<main id="main"></main>
+<footer>Concept mockup by Anvitha Abbagani, not a Vetcove product or screen. Made-up clinic and data.</footer>
 
 <div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"></aside>
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle"></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
 (() => {
 'use strict';
-
 /* ---------- dates (UTC, day granularity) ---------- */
 const MS = 86400000;
 const D = s => Date.UTC(+s.slice(0,4), +s.slice(5,7)-1, +s.slice(8,10));
@@ -338,8 +347,8 @@ const RULES = {
 };
 const START = '2026-10-06';
 const MAX_ADVANCE = 8; // business days the demo clock can move forward
-const OWNERS = ['Dana R. · Practice Manager','Dr. A. Patel · DVM','Sam K. · Front desk','Jordan L. · Pharmacy tech'];
-const ME = 'Dana R.';
+const OWNERS = ['Jane Doe · Practice Manager','Dr. A. Patel · DVM','Sam K. · Front desk','Jordan L. · Pharmacy tech'];
+const ME = 'Jane Doe';
 const RESOLUTIONS = [
   'Switched to in-clinic pickup',
   'Vendor confirmed new ship date',
@@ -370,7 +379,11 @@ const DRUGS = {
   methi:    { name:'Methimazole 5 mg tablets', cls:'Endocrine (thyroid)', tier:'maintenance' },
   pred:     { name:'Prednisolone 5 mg tablets', cls:'Corticosteroid', tier:'maintenance' },
   enal:     { name:'Enalapril 10 mg tablets', cls:'Cardiac', tier:'critical' },
-  maro:     { name:'Maropitant 16 mg tablets', cls:'Antiemetic', tier:'maintenance' }
+  maro:     { name:'Maropitant 16 mg tablets', cls:'Antiemetic', tier:'maintenance' },
+  amlo:     { name:'Amlodipine 1.25 mg tablets', cls:'Blood pressure', tier:'critical' },
+  kbr:      { name:'Potassium bromide 250 mg/mL oral liquid', cls:'Anticonvulsant', tier:'critical' },
+  cyclo:    { name:'Cyclosporine 50 mg capsules', cls:'Immune / skin', tier:'maintenance' },
+  famo:     { name:'Famotidine 10 mg tablets', cls:'Stomach', tier:'maintenance' }
 };
 const SEED = [
   { id:'HD-24117', pet:'Maple', species:'Dog', client:'R. Okafor', drug:'insulin', path:'standard',
@@ -420,7 +433,19 @@ const SEED = [
     events:[['approved','2026-09-28'],['ack','2026-09-28'],['shipped','2026-09-30'],['scan','2026-10-02'],['delivered','2026-10-05']] },
   { id:'HD-24102', pet:'Nala', species:'Cat', client:'F. Haddad', drug:'maro', path:'standard',
     qty:4, unit:'tab', dose:1, sig:'1 tablet daily as needed', lastFill:'2026-09-20',
-    events:[['approved','2026-09-30'],['ack','2026-09-30'],['shipped','2026-10-01'],['scan','2026-10-02'],['delivered','2026-10-03']] }
+    events:[['approved','2026-09-30'],['ack','2026-09-30'],['shipped','2026-10-01'],['scan','2026-10-02'],['delivered','2026-10-03']] },
+  { id:'HD-24130', pet:'Biscuit', species:'Cat', client:'N. Duval', drug:'amlo', path:'standard',
+    qty:30, unit:'tab', dose:1, sig:'1 tablet once daily', lastFill:'2026-09-12',
+    events:[['approved','2026-09-29'],['ack','2026-09-29'],['shipped','2026-09-30'],['scan','2026-10-01'],['delivered','2026-10-02']] },
+  { id:'HD-24131', pet:'Ranger', species:'Dog', client:'B. Holloway', drug:'kbr', path:'standard',
+    qty:250, unit:'mL', dose:6, sig:'3 mL twice daily', lastFill:'2026-09-01',
+    events:[['approved','2026-10-05'],['ack','2026-10-05'],['shipped','2026-10-06'],['scan','2026-10-07'],['delivered','2026-10-08']] },
+  { id:'HD-24132', pet:'Pippin', species:'Dog', client:'M. Esposito', drug:'cyclo', path:'standard',
+    qty:30, unit:'cap', dose:1, sig:'1 capsule once daily', lastFill:'2026-09-10',
+    events:[['approved','2026-10-01'],['ack','2026-10-01'],['shipped','2026-10-02'],['scan','2026-10-05'],['delivered','2026-10-07']] },
+  { id:'HD-24133', pet:'Olive', species:'Cat', client:'J. Tanaka', drug:'famo', path:'standard',
+    qty:30, unit:'tab', dose:1, sig:'1 tablet once daily', lastFill:'2026-09-27',
+    events:[['approved','2026-09-23'],['ack','2026-09-23'],['shipped','2026-09-24'],['scan','2026-09-25'],['delivered','2026-09-27']] }
 ];
 
 /* ---------- state ---------- */
@@ -567,341 +592,286 @@ function lateText(e){
   return `${plural(r.late,'day')} past ship-by (${fmt(r.deadline)})`;
 }
 
-/* ---------- rendering ---------- */
+/* ---------- simple UI: one list, one action ---------- */
 const $ = s => document.querySelector(s);
 const main = $('#main');
-let view = 'exceptions', openId = null;
+let view = 'list', openId = null;
 
-function counts(){
-  const xs = Object.values(S.exceptions);
-  const ens = xs.filter(x => x.state!=='resolved').map(enrich);
-  return {
-    open: xs.filter(x => x.state==='open').length,
-    ack: xs.filter(x => x.state==='ack').length,
-    res: xs.filter(x => x.state==='resolved').length,
-    crit: ens.filter(e => e.group===0).length
-  };
+const NAME = { insulin:'insulin', toceranib:'chemo pills', trilostane:'Cushing’s capsules', pimo:'heart medication', flural:'flea treatment', renal:'kidney diet', levet:'seizure medication', pheno:'seizure medication', carpro:'pain medication', gaba:'gabapentin', oclac:'allergy pills', hwprev:'heartworm chews', methi:'thyroid pills', pred:'prednisolone', enal:'heart medication', maro:'nausea pills', amlo:'blood pressure pills', kbr:'seizure liquid', cyclo:'immune pills', famo:'stomach pills' };
+const HEAD = { R1:'hasn’t been confirmed by the pharmacy', R2:'hasn’t shipped', R3:'is stuck in transit', R4:'is backordered', R5:'autoship didn’t go out' };
+const WHY = e => {
+  const r = e.r, late = r.rule ? r.late : 0;
+  const d = plural(late,'day');
+  return { R1:`Pharmacy hasn’t confirmed it · ${d} late`, R2:`Not shipped yet · ${d} late`, R3:`No tracking update · ${d} late`,
+           R4: late ? `Pharmacy says backordered · ${d} ago` : 'Pharmacy says backordered · today',
+           R5:`Autoship didn’t go out · ${d} late` }[e.x.rule];
+};
+const CHOICES = ['Offered pickup at the clinic','Pharmacy gave a new date','Called the client','It arrived'];
+
+function doneLabel(x){ return /^Delivered/.test(x.resolution) ? 'Arrived on its own' : x.resolution; }
+function histText(a, x){
+  if (/^Raised by rule/.test(a.text)) return `Flagged: ${HEAD[x.rule].replace('autoship didn’t go out','the autoship didn’t go out')}`;
+  if (/^Auto-resolved/.test(a.text)) return 'Arrived; closed automatically';
+  return a.text;
+}
+function histHTML(x){
+  return `<div class="sub-h">History</div><ul class="hist">${x.audit.map(a => `<li><span>${esc(histText(a,x))}</span><span class="who">${esc(a.actor.replace(' (system)',''))}<br>${fmt(a.date)}, ${a.time}</span></li>`).join('')}</ul>`;
+}
+function leftText(e){
+  const n = NAME[e.o.drug];
+  if (!e.sup.known) return { t:'Supply unknown', c:'grey' };
+  const L = e.sup.left;
+  const t = L < 0 ? `Ran out of ${n} ${plural(-L,'day')} ago` : L === 0 ? `Runs out of ${n} today` : `${plural(L,'day')} of ${n} left`;
+  if (e.tier !== 'critical' || L > 7) return { t, c:'ok' };
+  return { t, c: L <= 3 ? 'red' : 'amber' };
 }
 
 function render(){
-  $('#clockDate').textContent = fmtLong(S.now);
-  $('#advanceBtn').disabled = S.advances >= MAX_ADVANCE;
-  const c = counts();
-  const active = c.open + c.ack;
-  for (const id of ['#navCount','#navCountM']){ const el=$(id); el.textContent = active; el.style.display = active ? '' : 'none'; }
-  document.querySelectorAll('[data-view]').forEach(a => a.setAttribute('aria-current', a.dataset.view===view ? 'page' : 'false'));
-  if (view==='exceptions') renderQueue(c);
-  else if (view==='orders') renderOrders();
-  else if (view==='rules') renderRules();
-  else renderHow();
-  if (openId) renderDrawer();
+  $('#howBtn').style.display = view==='how' ? 'none' : '';
+  if (view==='how') renderHow(); else renderList();
+  if (openId) renderPanel();
 }
 
-function chipTier(t){ return `<span class="chip ${t==='critical'?'crit':'maint'}">${t==='critical'?'Critical':'Maintenance'}</span>`; }
-function chipState(x){
-  const m = { open:['open','Open'], ack:['ack','Acknowledged'], resolved:['res','Resolved'] }[x.state];
-  return `<span class="chip ${m[0]}">${m[1]}</span>`;
-}
-
-function renderQueue(c){
+function renderList(){
   const all = Object.values(S.exceptions).map(enrich);
-  const f = S.filter;
-  const list = all.filter(e => f==='all' ? true : f==='active' ? e.x.state!=='resolved' : e.x.state===f);
-  const rows = ranked(list, S.sort);
+  const live = ranked(all.filter(e => e.x.state==='open'), S.sort);
+  const q = (S.q||'').trim().toLowerCase();
+  const hit = e => !q || [e.o.pet,e.o.client,e.o.id,NAME[e.o.drug],DRUGS[e.o.drug].name,e.o.species].join(' ').toLowerCase().includes(q);
+  const shown = live.filter(hit);
+  const done = all.filter(e => e.x.state==='resolved' && hit(e));
+  const waiting = all.filter(e => e.x.state==='waiting' && hit(e)).sort((a,b) => a.x.waitUntil.localeCompare(b.x.waitUntil));
+  const crit = live.filter(e => e.group===0).length;
   main.innerHTML = `
-    <h1>Stalled orders</h1>
-    <p class="lede">Approved home-delivery orders that stopped moving, so the clinic finds out before the client does. Every row is raised by a plain rule against the order’s expected timeline, then ranked by how soon the pet runs out.</p>
-    <div class="tiles">
-      <div class="tile"><div class="k">Open</div><div class="v">${c.open}</div></div>
-      <div class="tile crit"><div class="k">Critical, ≤ 7 days supply</div><div class="v">${c.crit}</div></div>
-      <div class="tile"><div class="k">Acknowledged</div><div class="v">${c.ack}</div></div>
-      <div class="tile"><div class="k">Resolved</div><div class="v">${c.res}</div></div>
+    <div class="explain" aria-label="How TickTock works">
+      <div><span class="n">1</span><span><b>Every order gets deadlines</b>Approved orders should be confirmed, shipped and moving on time.</span></div>
+      <div><span class="n">2</span><span><b>Missed one? It lands here</b>Pets who will run out soonest are at the top.</span></div>
+      <div><span class="n">3</span><span><b>Tap Fix</b>TickTock suggests the fastest next step. Do it in one tap.</span></div>
     </div>
-    <div class="toolbar">
-      <div class="seg" role="group" aria-label="Sort">
-        <button data-sort="urgency" aria-pressed="${S.sort==='urgency'}">Urgency</button>
-        <button data-sort="late" aria-pressed="${S.sort==='late'}">Days late</button>
-      </div>
-      <div class="seg" role="group" aria-label="Filter">
-        ${[['active','Active'],['open','Open'],['ack','Acknowledged'],['resolved','Resolved'],['all','All']].map(([k,l]) => `<button data-filter="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}
-      </div>
-      <span class="hint">${S.sort==='urgency' ? 'Ranked by run-out date and drug tier' : 'Ranked by days late only'}</span>
-    </div>
-    <div class="queue" role="list">
-      ${rows.length ? rows.map((e,i) => rowHTML(e,i)).join('') : `<div class="empty">${f==='resolved' ? 'Nothing resolved yet.' : 'No stalled orders right now. Every approved order is inside its expected window.'}</div>`}
-    </div>`;
-  main.querySelectorAll('[data-sort]').forEach(b => b.onclick = () => { S.sort = b.dataset.sort; render(); });
-  main.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => { S.filter = b.dataset.filter; render(); });
-  main.querySelectorAll('.row').forEach(b => b.onclick = () => openDrawer(b.dataset.order));
+    <div class="headrow"><h1>${live.length ? `${live.length} of ${SEED.length} orders ${live.length===1?'is':'are'} stuck` : 'Nothing is stuck'}</h1>${waiting.length ? `<span class="waitcount">${waiting.length} waiting on someone</span>` : ''}</div>
+    <p class="lead">${live.length ? (crit ? `${crit} ${crit===1?'pet runs':'pets run'} out of a critical medication within a week. Start at the top.` : 'None are urgent right now. Start at the top.') : 'Every approved order is on schedule.'}</p>
+    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search pet, owner, medication or order #" value="${esc(S.q||'')}" aria-label="Search orders"></label>
+    ${q ? `<p class="match">${plural(shown.length,'stuck order')} and ${done.length} done match “${esc(S.q)}”.</p>` : ''}
+    ${shown.length ? `<div class="legend"><span><i class="r"></i>Critical, 3 days or less</span><span><i class="a"></i>Critical, 4–7 days</span><span><i class="g"></i>Not urgent</span><span><i class="u"></i>Can’t tell how much is left</span></div>
+    <p class="legend-note">Only critical medications turn red or amber, and those are always at the top.</p>` : ''}
+    ${shown.length > 1 ? `<p class="sortline">${S.sort==='urgency' ? 'Sorted by who runs out first.' : 'Sorted by most overdue.'} <button id="sortBtn">${S.sort==='urgency' ? 'Sort by most overdue instead' : 'Sort by who runs out first'}</button></p>` : '<div style="height:14px"></div>'}
+    <div class="list">${shown.length ? shown.map(e => card(e, live.indexOf(e))).join('') : `<div class="empty">${q ? 'No stuck orders match that search.' : 'Every approved order is on schedule.'}</div>`}</div>
+    ${waiting.length ? `<details class="done waiting" open><summary>Waiting (${waiting.length})</summary><ul>${waiting.map(e => `<li><button data-id="${e.o.id}"><span><span class="hg">⏳</span><b>${esc(e.o.pet)}</b> · ${esc(e.x.waitFor)} · ${esc(dayLabel(e.x.waitUntil))}</span><span class="d">Details ›</span></button></li>`).join('')}</ul></details>` : ''}
+    ${done.length ? `<details class="done" ${q || S.doneOpen ? 'open' : ''}><summary>Done (${done.length})</summary><ul>${done.map(e => `<li><button data-id="${e.o.id}"><span><span class="ck">✓</span><b>${esc(e.o.pet)}</b> · ${esc(doneLabel(e.x))}</span><span class="d">Details ›</span></button></li>`).join('')}</ul></details>` : ''}`;
+  const qi = $('#q');
+  qi.oninput = () => { const pos = qi.selectionStart; S.q = qi.value; render(); const n = $('#q'); n.focus(); try { n.setSelectionRange(pos,pos); } catch(_){} };
+  const dd = main.querySelector('details.done'); if (dd) dd.ontoggle = () => { S.doneOpen = dd.open; };
+  main.querySelectorAll('.done [data-id], .waiting [data-id]').forEach(b => b.onclick = () => openPanel(b.dataset.id));
+  const sb = $('#sortBtn'); if (sb) sb.onclick = () => { S.sort = S.sort==='urgency' ? 'late' : 'urgency'; render(); };
+  main.querySelectorAll('.list .card').forEach(c => c.onclick = () => openPanel(c.dataset.id));
   S.flash = [];
 }
 
-function rowHTML(e,i){
-  const isNew = S.newIds.includes(e.o.id) && e.x.state==='open';
-  const doFlash = S.flash.includes(e.o.id);
-  const resolved = e.x.state==='resolved';
-  return `<button class="row${doFlash?' flash':''}" role="listitem" data-order="${e.o.id}" aria-label="${esc(e.o.pet)}, ${esc(DRUGS[e.o.drug].name)}, ${esc(RULES[e.x.rule].name)}">
-    <div class="rank${i===0 && !resolved && S.sort==='urgency' ? ' top':''}">${resolved ? '✓' : '#'+(i+1)}</div>
-    <div>
-      <div class="pet">${esc(e.o.pet)} <span class="sub">${esc(e.o.species)} · ${esc(e.o.client)}</span> ${isNew?'<span class="chip new">New</span>':''}</div>
-      <div class="drug">${esc(DRUGS[e.o.drug].name)}</div>
-      <div class="sub">${esc(e.o.id)} · ${PATHS[e.o.path].label}</div>
-    </div>
-    <div class="c-drug">
-      <div><span class="chip rule">${e.x.rule} · ${RULES[e.x.rule].name}</span></div>
-      <div class="sub" style="margin-top:3px">${resolved ? esc(e.x.resolution) : lateText(e)}</div>
-    </div>
-    <div class="c-supply">
-      <span class="cell-label">Supply</span><br><span class="supply ${supplyClass(e)}">${supplyText(e.sup)}</span>
-      <div style="margin-top:3px">${chipTier(e.tier)}</div>
-    </div>
-    <div class="c-state">
-      ${chipState(e.x)}
-      <div class="sub" style="margin-top:3px">${e.x.owner ? esc(e.x.owner.split(' · ')[0]) : 'Unassigned'}</div>
-    </div>
+function card(e,i){
+  const lt = leftText(e);
+  const isNew = S.newIds.includes(e.o.id);
+  return `<button class="card${S.flash.includes(e.o.id)?' flash':''}" data-id="${e.o.id}">
+    <span class="num${i===0 && S.sort==='urgency' ? ' first':''}">${i+1}</span>
+    <span class="body">
+      <span class="who"><b>${esc(e.o.pet)}</b> · ${esc(NAME[e.o.drug])}${isNew?'<span class="tag">NEW</span>':''}</span>
+      <span class="left ${lt.c}" style="display:block">${esc(lt.t)}</span>
+      <span class="why" style="display:block">${esc(WHY(e))}</span>
+      <span class="assignee ${!e.x.owner ? '' : e.x.owner.startsWith(ME) ? 'mine' : 'other'}">${!e.x.owner ? 'Unassigned' : e.x.owner.startsWith(ME) ? 'Assigned to you' : `${esc(e.x.owner.split(' · ')[0])} is on it`}</span>
+    </span>
+    <span class="fix">Fix ›</span>
   </button>`;
 }
 
-function renderOrders(){
-  const rows = SEED.map(o => ({ o, r:evalOrder(o,S.now), sup:supplyOf(o,S.now), x:S.exceptions[o.id] }))
-    .sort((a,b) => b.r.approved.localeCompare(a.r.approved));
-  main.innerHTML = `
-    <h1>All home-delivery orders</h1>
-    <p class="lede">Every approved order, checked against its expected timeline as of ${fmt(S.now)}. Most are fine, which is the point: TickTock only surfaces the ones that broke a rule.</p>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Order</th><th>Patient</th><th>Item</th><th>Path</th><th>Approved</th><th>Status</th><th>Supply</th><th>TickTock</th></tr></thead>
-      <tbody>${rows.map(({o,r,sup,x}) => `
-        <tr class="${x?'clickable':''}" ${x?`data-order="${o.id}" tabindex="0"`:''}>
-          <td>${o.id}</td>
-          <td><b>${esc(o.pet)}</b><div class="sub">${esc(o.client)}</div></td>
-          <td>${esc(DRUGS[o.drug].name)}</td>
-          <td>${PATHS[o.path].label}</td>
-          <td>${fmt(r.approved)}</td>
-          <td>${r.delivered ? `Delivered ${fmt(r.delivered)}` : esc(r.status)}</td>
-          <td class="supply ${!sup.known?'unknown':''}">${supplyText(sup)}</td>
-          <td>${x ? `${chipState(x)} <span class="sub">${x.rule}</span>` : (r.delivered ? '<span class="sub">—</span>' : '<span class="sub">On track</span>')}</td>
-        </tr>`).join('')}
-      </tbody></table></div>`;
-  main.querySelectorAll('tr.clickable').forEach(tr => {
-    tr.onclick = () => openDrawer(tr.dataset.order);
-    tr.onkeydown = ev => { if (ev.key==='Enter') openDrawer(tr.dataset.order); };
-  });
-}
 
-function renderRules(){
-  const drugs = Object.entries(DRUGS);
-  main.innerHTML = `
-    <h1>Rules &amp; tiers</h1>
-    <p class="lede">Everything TickTock flags comes from these windows and rules. Nothing is learned or guessed, so every flag can be explained in one sentence.</p>
-    <h2>Expected windows by fulfillment path</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Path</th><th>Vendor acknowledges within</th><th>Ships within</th><th>Max gap between carrier scans</th></tr></thead>
-      <tbody>${Object.values(PATHS).map(p => `<tr><td><b>${p.label}</b></td><td>${p.ackDays ? plural(p.ackDays,'business day')+' of approval' : '— (scheduled)'}</td><td>${plural(p.shipDays,'business day')} of ${p.ackDays?'approval':'scheduled date'}</td><td>${plural(p.scanGap,'day')}</td></tr>`).join('')}</tbody>
-    </table></div>
-    <p class="sub">Windows are illustrative defaults for the demo. In a real rollout they would be calibrated by replaying past orders (PRD, Timeline).</p>
-    <h2>Rules</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Rule</th><th>Fires when</th></tr></thead>
-      <tbody>${Object.entries(RULES).map(([k,r]) => `<tr><td><span class="chip rule">${k}</span> <b>${r.name}</b></td><td>${r.plain}</td></tr>`).join('')}</tbody>
-    </table></div>
-    <h2>Criticality tiers <span class="sub" style="font-weight:500">· clinic-editable</span></h2>
-    <p class="sub" style="margin-top:0">Tiers are a starting point the clinic owns, not a clinical judgment the software makes. Change one and the queue re-ranks.</p>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Item</th><th>Class</th><th>Tier</th></tr></thead>
-      <tbody>${drugs.map(([k,d]) => `<tr><td>${esc(d.name)}</td><td>${esc(d.cls)}</td><td>
-        <select data-tier="${k}" aria-label="Tier for ${esc(d.name)}">
-          <option value="critical" ${S.tiers[k]==='critical'?'selected':''}>Critical</option>
-          <option value="maintenance" ${S.tiers[k]==='maintenance'?'selected':''}>Maintenance</option>
-        </select></td></tr>`).join('')}</tbody>
-    </table></div>`;
-  main.querySelectorAll('[data-tier]').forEach(sel => sel.onchange = () => {
-    S.tiers[sel.dataset.tier] = sel.value;
-    toast(`${DRUGS[sel.dataset.tier].name.split(' ')[0]} set to ${sel.value}. Queue re-ranked.`);
-    render();
-  });
+const CAP = s => s[0].toUpperCase() + s.slice(1);
+function setTier(drug, critical){
+  const was = S.tiers[drug]; S.tiers[drug] = critical ? 'critical' : 'maintenance';
+  if (was === S.tiers[drug]) return;
+  Object.values(S.exceptions).filter(x => x.state!=='resolved' && SEED.find(o => o.id===x.orderId).drug===drug)
+    .forEach(x => audit(x, `Marked ${NAME[drug]} as ${critical ? 'critical' : 'standard'}`));
 }
-
 function renderHow(){
-  main.innerHTML = `
-    <h1>How it works</h1>
-    <p class="lede">With Vetcove Home Delivery, a clinic offers pet owners home delivery under its own name. When one of those orders gets stuck after the clinic approved it, the public reviews suggest the pet owner often notices first. TickTock is a concept for flipping that: the clinic finds out first, and the most urgent cases come first. Imagine it as a tab beside the order-approval queue.</p>
+  main.innerHTML = `<div class="how">
+    <a class="back" href="#/" style="display:inline-block;text-decoration:none">‹ Back to stuck orders</a>
+    <h1>How TickTock works</h1>
+    <p class="lead">When an approved order gets stuck, the clinic hears first, not the pet owner.</p>
     <div class="steps">
-      <div class="step"><div class="n">1</div><h3>Every order gets a timeline</h3><p>When the clinic approves an order, TickTock writes down when it should be acknowledged, shipped, and moving. Compounded medicines get longer windows.</p></div>
-      <div class="step"><div class="n">2</div><h3>Simple rules watch it</h3><p>Five plain rules, like “not shipped by its ship-by date,” check every order each day. No guessing and no black box.</p></div>
-      <div class="step"><div class="n">3</div><h3>A miss becomes a task</h3><p>A broken rule creates a task the clinic owns: who has it, what was done, and a timestamped history.</p></div>
-      <div class="step"><div class="n">4</div><h3>Most urgent first</h3><p>The list is sorted by when the pet will run out and how critical the drug is, so insulin outranks a flea treatment.</p></div>
+      <div class="step"><b>1. Deadlines</b><span>Confirmed, shipped and moving on time.</span></div>
+      <div class="step"><b>2. Missed one? It shows up</b><span>No one has to go looking.</span></div>
+      <div class="step"><b>3. Most urgent first</b><span>Pets about to run out come first.</span></div>
+      <div class="step"><b>4. Fix it fast</b><span>TickTock suggests the next step.</span></div>
     </div>
-    <div class="compare">
-      <div class="card"><h3>Without TickTock</h3><p class="prose">Maple’s insulin was approved Thursday and still hasn’t shipped. Nothing tells the clinic. On Wednesday Maple’s owner draws the last dose of insulin and calls, upset. The clinic’s name was on the order.</p></div>
-      <div class="card"><h3>With TickTock</h3><p class="prose">Tuesday morning, Maple’s order is #1 on the list: <b>not shipped by its ship-by date, 1 day of insulin left, critical.</b> Dana assigns it, the clinic offers pickup, and the owner hears from the clinic first.</p></div>
-    </div>
-    <h2>Try it</h2>
-    <ol class="prose">
-      <li>On <b>Stalled orders</b>, switch between <b>Urgency</b> and <b>Days late</b>. Watch the insulin and the flea treatment swap places.</li>
-      <li>Open any row to see <b>why it was flagged</b>, <b>why it’s ranked there</b>, and the run-out math.</li>
-      <li>Assign it, acknowledge it, then resolve it. Resolve stays locked until there’s an owner, a resolution, and a note.</li>
-      <li>Press <b>Advance 1 business day</b>. An order that was on track misses its window and appears as new; one that finally arrives closes itself.</li>
-      <li>On <b>Rules &amp; tiers</b>, mark the Cushing’s medicine as critical and watch the list re-rank.</li>
-    </ol>
-    <div class="card"><h3>What this prototype does not do</h3><p class="prose">It doesn’t send notifications, connect to any real pharmacy or practice software, suggest next steps, or warn at approval time. Those are next-phase ideas in the PRD. Everything here (clinic, pets, people, orders, dates) is made up, and the clock is simulated. Built only from public information; Vetcove’s real portal may already work differently.</p></div>
-    <p class="sub">Independent case study by Anvitha Abbagani, not an official Vetcove product.</p>`;
+    <div class="rules"><div class="rhead"><b>What counts as stuck, and the suggested fix</b><span class="override">Critical medicine with 3 days or less left? TickTock suggests <b>offering pickup at the clinic</b> first.</span></div>
+      <ul class="rlist">
+        <li><span class="rid">R1</span><span class="rtxt"><b>Not confirmed</b> by the pharmacy within 1 business day.</span><span class="rfix">Nudge the pharmacy</span></li>
+        <li><span class="rid">R2</span><span class="rtxt"><b>Not shipped</b> within 2 business days (5 if custom-made).</span><span class="rfix">Wait for a new date</span></li>
+        <li><span class="rid">R3</span><span class="rtxt"><b>Stuck in transit</b>: no tracking update for 3+ days.</span><span class="rfix">Ask the pharmacy to reship</span></li>
+        <li><span class="rid">R4</span><span class="rtxt"><b>Backordered</b>: the pharmacy can’t fill it right now.</span><span class="rfix">Switch to an in-stock alternative</span></li>
+        <li><span class="rid">R5</span><span class="rtxt"><b>Autoship missed</b>: a repeat delivery didn’t go out.</span><span class="rfix">Send this delivery now</span></li>
+      </ul>
+      <div class="rfoot">Always available too: <b>It arrived</b> · <b>No longer needed</b></div></div>
+  </div>`;
 }
 
-/* ---------- drawer ---------- */
-function openDrawer(orderId){
-  openId = orderId;
-  $('#drawer').classList.add('on'); $('#scrim').classList.add('on');
-  renderDrawer();
-  setTimeout(() => { const h = $('#drawerClose'); if (h) h.focus(); }, 50);
+/* ---------- panel ---------- */
+function openPanel(id){ openId = id; S.pick = null; S.told = false; $('#panel').classList.add('on'); $('#scrim').classList.add('on'); renderPanel(); setTimeout(() => $('#px') && $('#px').focus(), 30); }
+function closePanel(){ openId = null; $('#panel').classList.remove('on'); $('#scrim').classList.remove('on'); }
+const dayLabel = d => { const n = diff(d, S.now); return n<=0 ? 'today' : n===1 ? `tomorrow (${WD[dow(d)]})` : `${WD[dow(d)]}, ${fmt(d)}`; };
+const CLINIC = 'Maple Street Animal Hospital';
+function recommend(e){
+  if (e.tier==='critical' && e.sup.known && e.sup.left <= 3 && !e.x.declinedPickup) return 'pickup';
+  return { R1:'nudge', R2:'waitdate', R3:'reship', R4:'alt', R5:'sendnow' }[e.x.rule];
 }
-function closeDrawer(){
-  openId = null;
-  $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on');
-}
-function renderDrawer(){
-  const x = S.exceptions[openId]; if (!x) return closeDrawer();
-  const e = enrich(x);
-  const { o, r, sup } = e;
-  const all = Object.values(S.exceptions).filter(z => z.state!=='resolved').map(enrich);
-  const pos = ranked(all, S.sort).findIndex(z => z.o.id===o.id);
-  const p = PATHS[o.path];
-  const evs = o.events.filter(ev => ev[1] <= S.now);
-  const has = t => evs.find(ev => ev[0]===t);
+function actionDefs(e){
+  const o = e.o, n = NAME[o.drug], lt = leftText(e).t.toLowerCase();
+  return {
+    pickup:  { label:'Offer pickup at the clinic today', why:`${o.pet} has ${lt.replace(/ left$/,'')} left. Pickup keeps ${o.pet} covered while the order catches up.` },
+    nudge:   { label:'Nudge the pharmacy', why:'The pharmacy hasn’t confirmed this order. A reminder usually gets it moving.' },
+    waitdate:{ label:'Wait for a new date', why:'Use the date the pharmacy gave you, or TickTock’s estimate. TickTock checks again on that date so it isn’t forgotten.' },
+    reship:  { label:'Ask the pharmacy to reship', why:`Tracking hasn’t updated since ${e.r.lastMove ? fmt(e.r.lastMove) : 'it shipped'}. A reship is usually faster than waiting.` },
+    alt:     { label:'Switch to an in-stock alternative', why:'The pharmacy can’t fill this right now. A vet has to approve any switch.' },
+    sendnow: { label:'Send this delivery now', why:'The autoship date passed without shipping. Sending it now restarts the cycle.' },
+    arrived: { label:'It arrived', why:'Close this order because the medication reached the owner.' },
+    notneeded:{ label:'No longer needed', why:'Close this order because the pet doesn’t need it anymore (treatment changed, owner switched pharmacy, or similar).' }
 
-  const tl = [];
-  tl.push({ cls:'done', label: o.path==='autoship' ? 'Autoship cycle scheduled' : 'Approved by clinic', when: fmt(r.approved) });
-  if (p.ackDays){
-    tl.push(r.ack ? { cls:'done', label:'Vendor acknowledged', when:fmt(r.ack), exp:`due by ${fmt(r.ackBy)}` }
-                  : { cls: S.now > r.ackBy ? 'miss':'pend', label:'Vendor acknowledgment', when:'—', exp:`due by ${fmt(r.ackBy)}` });
-  }
-  tl.push(r.shipped ? { cls: r.shipped > r.shipBy ? 'miss':'done', label:'Shipped', when:fmt(r.shipped), exp:`due by ${fmt(r.shipBy)}` }
-                    : { cls: (S.now > r.shipBy && (r.ack || !p.ackDays)) ? 'miss':'pend', label:'Ship scan', when:'—', exp:`due by ${fmt(r.shipBy)}` });
-  evs.filter(ev => ev[0]==='scan').forEach(ev => tl.push({ cls:'done', label:`Carrier scan${ev[2] ? ': '+ev[2] : ''}`, when:fmt(ev[1]) }));
-  if (has('backorder')) { const b = has('backorder'); tl.push({ cls:'miss', label:b[2]||'Vendor backorder', when:fmt(b[1]) }); }
-  evs.filter(ev => ev[0]==='client_contact').forEach(ev => tl.push({ cls:'event', label:ev[2], when:fmt(ev[1]) }));
-  tl.push(r.delivered ? { cls:'done', label:'Delivered', when:fmt(r.delivered) } : { cls:'pend', label:'Delivered', when:'—' });
-
-  const math = sup.known
-    ? `<div>Last fill <b>${fmt(o.lastFill)}</b> · ${fmtNum(o.qty)} ${o.unit} ÷ ${fmtNum(o.dose)} ${o.unit}/day (“${esc(o.sig)}”)</div>
-       <div class="eq">= ${plural(sup.days,'day')} → runs out ${fmt(sup.runOut)} → ${supplyText(sup)} as of ${fmt(S.now)}</div>`
-    : `<div>Directions: “${esc(o.sig)}”. No daily dose can be read from this, so no run-out date is calculated.</div><div class="eq">Supply unknown. Ranked by days late instead.</div>`;
-
-  const resolved = x.state==='resolved';
-  const lateLine = r.rule ? lateText(e) : (r.delivered ? `now delivered ${fmt(r.delivered)}` : `now: ${r.status.toLowerCase()}`);
-  $('#drawer').innerHTML = `
-    <div class="drawer-head">
-      <div style="flex:1;min-width:0">
-        <div class="sub">${x.id} · order ${o.id} · ${PATHS[o.path].label}</div>
-        <h2 id="drawerTitle" style="margin:2px 0 4px;font-size:18px">${esc(o.pet)} <span class="sub" style="font-size:13px">${esc(o.species)} · ${esc(o.client)}</span></h2>
-        <div class="drug">${esc(DRUGS[o.drug].name)}</div>
-        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${chipState(x)} ${chipTier(e.tier)} <span class="chip rule">${x.rule}</span></div>
-      </div>
-      <button class="icon-btn" id="drawerClose" aria-label="Close">✕</button>
-    </div>
-    <div class="drawer-body">
-      <div class="callout why"><b>Why this was flagged:</b> ${RULES[x.rule].plain} <span class="sub">(${lateLine}${x.rule==='R4'&&r.detail?' · '+esc(r.detail):''})</span></div>
-      ${resolved ? '' : `<div class="callout rank-why"><b>${S.sort==='urgency' ? `Ranked #${pos+1} by urgency.` : `#${pos+1} by days late.`}</b> ${rankWhy(e, S.sort)}</div>`}
-      <h3>Supply</h3>
-      <div class="math">${math}</div>
-      <h3>Expected vs. actual</h3>
-      <ul class="timeline">${tl.map(t => `<li><span class="dot ${t.cls}"></span><span>${esc(t.label)}${t.exp?` <span class="sub">· ${t.exp}</span>`:''}</span><span class="tl-when">${t.when}</span></li>`).join('')}</ul>
-      <h3>Ownership</h3>
-      ${resolved ? `<div class="callout" style="background:var(--ok-soft);border-color:transparent"><b>Resolved:</b> ${esc(x.resolution)}${x.owner?` · ${esc(x.owner.split(' · ')[0])}`:''}<div class="sub" style="margin-top:4px">${esc(x.note)}</div></div>` : `
-      <div class="form-grid">
-        <label class="f">Owner
-          <select id="fOwner"><option value="">Unassigned</option>${OWNERS.map(w => `<option ${x.owner===w?'selected':''}>${esc(w)}</option>`).join('')}</select>
-        </label>
-        <label class="f">Resolution
-          <select id="fRes"><option value="">Choose…</option>${RESOLUTIONS.map(w => `<option ${x.draftRes===w?'selected':''}>${esc(w)}</option>`).join('')}</select>
-        </label>
-      </div>
-      <label class="f" style="margin-top:10px">Note
-        <textarea id="fNote" placeholder="What happened and what the client was told">${esc(x.draftNote||'')}</textarea>
-      </label>
-      <div class="actions">
-        <button class="btn" id="bAck" ${x.state!=='open'?'disabled':''}>${x.state==='open'?'Acknowledge':'Acknowledged'}</button>
-        <button class="btn primary" id="bRes" disabled>Resolve</button>
-        <span class="req-note" id="reqNote"></span>
-      </div>`}
-      <h3>Audit trail</h3>
-      <ul class="audit">${x.audit.map(a => `<li><span>${esc(a.text)}</span><span class="who">${esc(a.actor)} · ${fmt(a.date)} ${a.time}</span></li>`).join('')}</ul>
-    </div>`;
-  $('#drawerClose').onclick = closeDrawer;
-  if (resolved) return;
-  const owner = $('#fOwner'), res = $('#fRes'), note = $('#fNote'), bRes = $('#bRes'), req = $('#reqNote');
-  const check = () => {
-    const miss = [];
-    if (!owner.value) miss.push('owner'); if (!res.value) miss.push('resolution'); if (!note.value.trim()) miss.push('note');
-    bRes.disabled = miss.length > 0;
-    req.textContent = miss.length ? `Needs: ${miss.join(', ')}` : '';
-  };
-  owner.onchange = () => {
-    const prev = x.owner; x.owner = owner.value;
-    audit(x, x.owner ? `Assigned to ${x.owner.split(' · ')[0]}${prev?` (was ${prev.split(' · ')[0]})`:''}` : 'Unassigned');
-    render();
-  };
-  res.onchange = () => { x.draftRes = res.value; check(); };
-  note.oninput = () => { x.draftNote = note.value; check(); };
-  check();
-  $('#bAck').onclick = () => { x.state='ack'; audit(x,'Acknowledged'); render(); toast('Acknowledged'); };
-  bRes.onclick = () => {
-    if (bRes.disabled) return;
-    x.state='resolved'; x.resolution=res.value; x.note=note.value.trim(); x.draftRes=''; x.draftNote='';
-    audit(x, `Resolved: ${x.resolution}`);
-    render(); toast(`Resolved: ${o.pet}`);
   };
 }
-const fmtNum = n => Number.isInteger(n) ? String(n) : n.toFixed(3).replace(/0+$/,'');
+function estimateArrival(e){
+  const days = e.x.rule==='R4' ? 5 : e.r.shipped ? 2 : 3;
+  return addBiz(S.now, days);
+}
+function dateChips(opts, e, est){
+  const sup = e.sup;
+  const late = S.pick && sup.known && S.pick > sup.runOut;
+  return `<div class="chips">${opts.map(d => `<button class="chip${S.pick===d?' on':''}" data-pick="${d}">${esc(dayLabel(d))}${d===est?' · estimate':''}</button>`).join('')}
+      <input type="date" id="pickDate" value="${S.pick && !opts.includes(S.pick) ? S.pick : ''}" min="${addDays(S.now,1)}" aria-label="Pick another date"></div>
+    ${late ? `<div class="warn-line">Heads up: ${esc(e.o.pet)} runs out ${fmt(sup.runOut)}, before this date. Consider offering pickup instead.</div>` : ''}`;
+}
+function actionForm(k, e){
+  const o = e.o, n = NAME[o.drug];
+  if (k==='pickup') return `<div class="stockline">First check that the clinic has ${esc(n)} in stock to hand over.</div>
+    <label class="flabel">Text to ${esc(o.client)}</label>
+    <textarea id="msg" class="note msg">${esc(`Hi ${o.client}, ${o.pet}’s ${n} delivery is delayed. We’ve set some aside for you to pick up at the clinic today. — ${CLINIC}`)}</textarea>
+    <button class="go" data-do="pickup">Send text</button>`;
+  if (k==='alt') return `<label class="flabel">Send to</label><select id="vet" class="sel"><option>Dr. A. Patel</option><option>Dr. M. Cho</option></select>
+    <button class="go" data-do="alt">Send for approval</button>`;
+  if (k==='waitdate') { const est = estimateArrival(e); if (!S.pick) S.pick = est;
+    const opts = [...new Set([addBiz(S.now,1), addBiz(S.now,2), est, addBiz(est,1)])].sort();
+    return `<label class="flabel">When should it arrive? <span class="hint-i">TickTock’s estimate is selected. Pick the pharmacy’s date if you have one.</span></label>
+    ${dateChips(opts, e, est)}
+    <label class="check"><input type="checkbox" id="told" ${S.told?'checked':''}> I’ve told the owner</label>
+    <button class="go" data-do="waitdate" ${S.pick ? '' : 'disabled'}>Save date</button>`; }
+  const btn = { nudge:'Send reminder', reship:'Request reship', sendnow:'Send now', arrived:'Mark as arrived', notneeded:'Close order' }[k];
+  return `<button class="go" data-do="${k}">${btn}</button>`;
+}
+function renderPanel(){
+  const x = S.exceptions[openId]; if (!x) return closePanel();
+  const e = enrich(x), { o, r } = e;
+  const lt = leftText(e);
+  const done = x.state==='resolved', waiting = x.state==='waiting';
+  const evs = o.events.filter(v => v[1] <= S.now);
+  const tl = [[o.path==='autoship' ? 'Autoship scheduled' : 'Approved by clinic', fmt(r.approved), '']];
+  if (o.path!=='autoship') tl.push(r.ack ? ['Pharmacy confirmed', fmt(r.ack), ''] : [`Pharmacy confirmation (due ${fmt(r.ackBy)})`, 'missing', S.now > r.ackBy ? 'bad' : '']);
+  tl.push(r.shipped ? ['Shipped', fmt(r.shipped), ''] : [`Shipped (due ${fmt(r.shipBy)})`, 'not yet', S.now > r.shipBy ? 'bad' : '']);
+  evs.filter(v => v[0]==='scan').forEach(v => tl.push([`Tracking: ${v[2]||'scan'}`, fmt(v[1]), '']));
+  evs.filter(v => v[0]==='backorder').forEach(v => tl.push(['Pharmacy: backordered', fmt(v[1]), 'bad']));
+  evs.filter(v => v[0]==='client_contact').forEach(v => tl.push([v[2], fmt(v[1]), '']));
+  tl.push(r.delivered ? ['Delivered', fmt(r.delivered), ''] : ['Delivered', 'not yet', '']);
+  const sup = e.sup;
+  const defs = actionDefs(e), rec = recommend(e);
+  const lockedByOther = !done && x.owner && !x.owner.startsWith(ME);
+  const sel = S.act[x.id] || rec;
+  const ruleAct = { R1:'nudge', R2:'waitdate', R3:'reship', R4:'alt', R5:'sendnow' }[x.rule];
+  const others = [...new Set(['pickup', ruleAct, 'waitdate', 'arrived', 'notneeded'])].filter(k => k!==rec);
+  let body;
+  if (done) body = `<div class="p-done" style="margin-top:16px">✓ Done: ${esc(doneLabel(x))}${x.owner ? ` · by ${esc(x.owner.split(' · ')[0])}` : ''}</div>`;
+  else if (waiting) body = `<div class="p-wait">⏳ Waiting for <b>${esc(x.waitFor)}</b>, ${esc(dayLabel(x.waitUntil))}. TickTock checks again then.</div>
+    <div class="p-left left ${lt.c}" style="margin-top:12px">${esc(lt.t)}</div>
+    ${x.waitKind==='pickup'
+      ? `<div class="row-btns"><button class="go" data-do="pickedup">Picked up ✓</button><button class="ghost" data-do="declined">Owner said no</button></div>`
+      : `<div class="row-btns"><button class="go" data-do="arrived">It arrived</button><button class="ghost" data-do="restuck">Still stuck, move back</button></div>`}`;
+  else body = `<div class="p-left left ${lt.c}">${esc(lt.t)}</div>
+    ${x.declinedPickup ? `<div class="declined">Owner said no to pickup (${fmt(x.declinedPickup)}). Here’s the next best option.</div>` : ''}
+    <div class="rec ${sel===rec?'is-rec':''}">
+      <div class="rec-h">${sel===rec ? '<span class="badge">Suggested</span>' : ''}${esc(defs[sel].label)}</div>
+      ${defs[sel].why ? `<div class="rec-why">${esc(defs[sel].why)}</div>` : ''}
+      ${actionForm(sel, e)}
+    </div>
+    <div class="others"><span class="tiny">Other options:</span> ${[rec, ...others].filter(k => k!==sel).map(k => `<button class="link" data-act="${k}">${esc(defs[k].label)}${k===rec?' (suggested)':''}</button>`).join(' · ')}</div>
+    <div class="tier"><span class="t">Treat ${esc(NAME[o.drug])} as critical<span class="h">Critical medications go to the top when a pet has a week or less left.</span></span>
+      <label class="sw"><input type="checkbox" id="tierSw" ${e.tier==='critical'?'checked':''}><span class="tr"></span><span class="lbl">${e.tier==='critical'?'Critical':'Standard'}</span></label></div>`;
+  $('#panel').innerHTML = `
+    <button class="x" id="px" aria-label="Close">×</button>
+    <h2 class="p-title" id="pTitle">${esc(o.pet)}’s ${esc(NAME[o.drug])} ${HEAD[x.rule]}</h2>
+    <div class="p-sub">${esc(o.species)} · owner ${esc(o.client)} · order ${o.id}</div>
+    ${done ? '' : `<div class="assign"><span>Assigned to</span><select id="assignSel">
+      <option value="">Unassigned</option>${OWNERS.map(w => `<option value="${esc(w)}" ${x.owner===w?'selected':''}>${esc(w.split(' · ')[0])}${w.startsWith(ME)?' (you)':''}</option>`).join('')}</select></div>`}
+    ${lockedByOther ? `<div class="lockmsg"><span><b>${esc(x.owner.split(' · ')[0])}</b> is working on this. Take over so you don’t both contact the owner.</span><button id="takeOver">Take over</button></div>` : ''}
+    <div class="${lockedByOther ? 'locked' : ''}">${body}</div>
+    <details class="more" ${done || waiting ? 'open' : ''}><summary>${done || waiting ? 'Details' : 'Show details'}</summary>
+      <div class="sub-h">Order timeline</div>
+      <ul class="tl" style="margin-top:4px">${tl.map(([t,w,c]) => `<li><span class="${c}">${esc(t)}</span><span class="when ${c}">${esc(w)}</span></li>`).join('')}</ul>
+      <div class="note">${sup.known ? `Last refill ${fmt(o.lastFill)}. Directions: “${esc(o.sig)}.” Runs out ${fmt(sup.runOut)}.` : `Directions say “${esc(o.sig)},” so TickTock can’t tell when it runs out. It won’t guess.`}</div>
+      ${histHTML(x)}
+    </details>`;
+  $('#px').onclick = closePanel;
+  const as = $('#assignSel');
+  if (as) as.onchange = () => {
+    const prev = x.owner; x.owner = as.value;
+    audit(x, x.owner ? `Assigned to ${x.owner.split(' · ')[0]}${prev ? ` (was ${prev.split(' · ')[0]})` : ''}` : `Unassigned${prev ? ` (was ${prev.split(' · ')[0]})` : ''}`);
+    render(); toast(x.owner ? `Assigned to ${x.owner.split(' · ')[0]}` : 'Unassigned');
+  };
+  const tk = $('#takeOver');
+  if (tk) tk.onclick = () => { const prev = x.owner; x.owner = OWNERS[0]; audit(x, `${ME} took over from ${prev.split(' · ')[0]}`); render(); toast(`You took over ${o.pet}’s order`); };
+  const ts = $('#tierSw');
+  if (ts) ts.onchange = () => { setTier(o.drug, ts.checked); render(); toast(`${CAP(NAME[o.drug])} is now ${ts.checked ? 'critical' : 'standard'}. List re-sorted.`); };
+  $('#panel').querySelectorAll('[data-act]').forEach(b => b.onclick = () => { S.act[x.id] = b.dataset.act; S.pick = null; renderPanel(); });
+  const told = $('#told'); if (told) told.onchange = () => { S.told = told.checked; };
+  $('#panel').querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { S.pick = b.dataset.pick; renderPanel(); });
+  const pd = $('#pickDate'); if (pd) pd.onchange = () => { S.pick = pd.value || null; renderPanel(); };
+  const finish = (state, label, extra) => {
+    x.owner = x.owner || OWNERS[0];
+    if (state==='resolved'){ x.state='resolved'; x.resolution=label; audit(x, extra || `Done: ${label}`); }
+    else { x.state='waiting'; x.waitFor=label.waitFor; x.waitUntil=label.until; audit(x, extra); }
+    delete S.act[x.id]; S.pick = null;
+  };
+  $('#panel').querySelectorAll('[data-do]').forEach(b => b.onclick = () => {
+    const k = b.dataset.do; let msg;
+    if (k==='pickup'){ finish('waiting',{waitFor:'owner to pick up', until:S.now}, `Texted ${o.client}: pickup offered`); x.waitKind='pickup'; msg = `Text sent to ${o.client} (demo). Waiting for them to pick up.`; }
+    else if (k==='pickedup'){ x.state='resolved'; x.resolution='Picked up at the clinic'; delete x.waitKind; audit(x,'Owner picked up at the clinic'); msg = `Done: ${o.pet}`; }
+    else if (k==='declined'){ x.state='open'; x.declinedPickup=S.now; delete x.waitFor; delete x.waitUntil; delete x.waitKind; audit(x,'Owner said no to pickup'); msg = `${o.pet} is back on the list with another suggestion.`; }
+    else if (k==='nudge'){ const u = addBiz(S.now,1); finish('waiting',{waitFor:'pharmacy to confirm', until:u}, 'Sent the pharmacy a reminder'); msg = `Reminder sent. Waiting until ${dayLabel(u)}.`; }
+    else if (k==='reship'){ const u = addBiz(S.now,2); finish('waiting',{waitFor:'reshipped package', until:u}, 'Asked the pharmacy to reship'); msg = `Reship requested. Waiting until ${dayLabel(u)}.`; }
+    else if (k==='alt'){ const v = $('#vet').value, u = addBiz(S.now,1); finish('waiting',{waitFor:`${v} to approve a switch`, until:u}, `Sent to ${v} to approve an in-stock alternative`); msg = `Sent to ${v}.`; }
+    else if (k==='sendnow'){ const u = addBiz(S.now,1); finish('waiting',{waitFor:'ship scan', until:u}, 'Asked the pharmacy to send this delivery now'); msg = `Requested. Waiting until ${dayLabel(u)}.`; }
+    else if (k==='notneeded'){ finish('resolved','No longer needed'); msg = `Closed: ${o.pet}`; }
+    else if (k==='arrived'){ finish('resolved','It arrived'); msg = `Done: ${o.pet}`; }
+    else if (k==='waitdate'){ if (!S.pick) return; const u = S.pick, t = !!S.told;
+      finish('waiting',{waitFor: t ? 'new date · owner told' : 'new date · owner not told yet', until:u}, `Waiting until ${fmt(u)}${t ? ' · owner told' : ''}`);
+      msg = `Saved. TickTock checks again ${dayLabel(u)}.`; }
+    else if (k==='restuck'){ x.state='open'; audit(x,'Moved back to stuck'); delete x.waitFor; delete x.waitUntil; msg = `${o.pet} is back on the stuck list.`; }
+    closePanel(); render(); toast(msg);
+  });
+}
 
-/* ---------- toast, theme, routing ---------- */
+/* ---------- wiring ---------- */
 let tt;
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'), 2600); }
-
-function currentTheme(){
-  const a = document.documentElement.getAttribute('data-theme');
-  if (a) return a;
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-function paintThemeBtn(){ $('#themeBtn').textContent = currentTheme()==='dark' ? '☀' : '☾'; }
-$('#themeBtn').onclick = () => {
-  const next = currentTheme()==='dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  try { localStorage.setItem('sw-theme', next); } catch(_) {}
-  paintThemeBtn();
-};
-try { const t = localStorage.getItem('sw-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch(_) {}
-paintThemeBtn();
-
-function route(){
-  const v = (location.hash.match(/^#\/(\w+)/)||[])[1];
-  view = ['exceptions','orders','rules','how'].includes(v) ? v : 'exceptions';
-  closeDrawer();
-  render();
-  window.scrollTo(0,0);
-}
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2600); }
+function route(){ view = /^#\/how/.test(location.hash) ? 'how' : 'list'; closePanel(); render(); window.scrollTo(0,0); }
 window.addEventListener('hashchange', route);
-$('#scrim').onclick = closeDrawer;
-document.addEventListener('keydown', ev => { if (ev.key==='Escape' && openId) closeDrawer(); });
-
-$('#advanceBtn').onclick = () => {
-  if (S.advances >= MAX_ADVANCE) return;
-  S.now = addBiz(S.now, 1);
-  S.advances++;
-  const created = runRules();
-  S.newIds = created; S.flash = created.slice();
-  const closed = Object.values(S.exceptions).filter(x => x.resolution==='Delivered (auto-closed)' && x.audit[x.audit.length-1].date===S.now).length;
-  render();
-  const bits = [];
-  if (created.length) bits.push(`${plural(created.length,'new stalled order')}`);
-  if (closed) bits.push(`${closed} auto-closed on delivery`);
-  toast(`${fmtLong(S.now)}: ${bits.length ? bits.join(' · ') : 'no new stalls'}`);
-};
-$('#resetBtn').onclick = () => { init(); toast('Demo reset'); };
-
+$('#scrim').onclick = closePanel;
+document.addEventListener('keydown', ev => { if (ev.key==='Escape' && openId) closePanel(); });
+function shiftToThisWeek(){
+  const t = new Date(); const today = iso(Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()));
+  const weeks = Math.floor(diff(today, START) / 7);
+  if (weeks <= 0) return START;
+  const n = weeks * 7;
+  SEED.forEach(o => { o.lastFill = addDays(o.lastFill, n); o.events.forEach(ev => { ev[1] = addDays(ev[1], n); }); });
+  return addDays(START, n);
+}
+const NOW = shiftToThisWeek();
 function init(){
-  S = freshState();
-  runRules();
-  if (!location.hash) location.hash = '#/exceptions';
+  S = freshState(); S.now = NOW; S.act = {}; S.pick = null; runRules();
+  const otis = S.exceptions['HD-24088']; if (otis){ otis.owner = OWNERS[2]; audit(otis, 'Assigned to Sam K.', 'Sam K.'); }
   route();
 }
 init();

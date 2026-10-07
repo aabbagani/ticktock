@@ -1,25 +1,24 @@
 # TickTock: a concept for Vetcove Home Delivery
 
-**Independent case study by Anvitha Abbagani, not an official Vetcove product.** Built from public
-information only. The clinic, pets, people and orders are fictional, and the clock is simulated.
+**Concept mockup by Anvitha Abbagani, not a Vetcove product or screen. Made-up clinic and data.**
+Built from public information only.
 
 **Live:** https://ticktock.abbagani.com
 
 When a clinic sells medication through a branded home-delivery storefront and an approved order
-stalls at the vendor, the pet owner often finds out first. TickTock gives every approved order an
-expected timeline. Five plain rules flag orders that stop moving, and the clinic gets an owned
-exception ranked by how soon the pet runs out.
+gets stuck, the pet owner often finds out first. TickTock flips that: the clinic hears first.
 
-**What the prototype does** (styled after the patterns on Vetcove's public product pages; no Vetcove logo or brand assets):
-- milestone rules R1–R5 → exception queue;
-- urgency ranking by days of supply × drug tier, with a toggle to compare against days late;
-- assign / acknowledge / resolve with an audit trail;
-- a simulated clock that raises new stalls and auto-closes delivered orders;
-- editable tiers;
-- a "How it works" explainer.
+**What the prototype does:**
+- Five plain rules flag stuck orders: not confirmed, not shipped, stuck in transit, backordered,
+  autoship missed.
+- The list is sorted by who runs out first. Only critical medicines turn red or amber.
+- **Fix** suggests the fastest next step for that problem: offer pickup, nudge the pharmacy, wait
+  for a new date, reship, switch to an alternative (vet approves), or send now.
+- Orders move from Stuck to Waiting (with a date) to Done, with a history of who did what.
+- Staff assignment, with a take-over lock so two people don't contact the same owner.
+- Search, a Critical/Standard switch per medicine, and a one-screen "How it works."
 
-**What it doesn't do:** suggested actions, approval-time warnings, real notifications, persistence,
-or any connection to a real pharmacy or practice-management system.
+**What it doesn't do:** real notifications or messages, logins, saved data, or any connection to a
+real pharmacy or practice-management system. The demo dates follow the current week.
 
-It is one self-contained HTML file with no build step and no network calls. Open `index.html` in any
-browser.
+It is one self-contained HTML file with no build step and no network calls.
