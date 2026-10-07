@@ -1,16 +1,16 @@
-# Stall Watch: a concept for Vetcove Home Delivery
+# TickTock: a concept for Vetcove Home Delivery
 
 **Independent case study by Anvitha Abbagani, not an official Vetcove product.** Built from public
 information only. The clinic, pets, people and orders are fictional, and the clock is simulated.
 
-**Live:** https://stallwatch.abbagani.com
+**Live:** https://ticktock.abbagani.com
 
 When a clinic sells medication through a branded home-delivery storefront and an approved order
-stalls at the vendor, the pet owner often finds out first. Stall Watch gives every approved order an
+stalls at the vendor, the pet owner often finds out first. TickTock gives every approved order an
 expected timeline. Five plain rules flag orders that stop moving, and the clinic gets an owned
 exception ranked by how soon the pet runs out.
 
-**What the prototype does:**
+**What the prototype does** (styled after the patterns on Vetcove's public product pages; no Vetcove logo or brand assets):
 - milestone rules R1–R5 → exception queue;
 - urgency ranking by days of supply × drug tier, with a toggle to compare against days late;
 - assign / acknowledge / resolve with an audit trail;
